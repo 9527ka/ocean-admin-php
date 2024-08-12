@@ -28,6 +28,12 @@ class UserPoster extends BaseModel
 {
     protected $name = 'user_posters';
 
+	// 设置json类型字段
+	protected $json = ['poster_images'];
+    
+    // 设置JSON数据返回数组
+    protected $jsonAssoc = true;
+    
     // 自动写入时间戳字段
     protected $autoWriteTimestamp = true;
 
