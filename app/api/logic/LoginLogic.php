@@ -163,6 +163,10 @@ class LoginLogic extends BaseLogic
                 throw new \Exception(Lang::get('user_not_exist'));
             }
 
+            if ($user->is_disable) {
+                throw new \Exception(Lang::get('用户已注销活禁用'));
+            }
+
             // 验证密码
             $password = self::getPwdEncryptString($params['password']);
             if ($password != $user->password) {

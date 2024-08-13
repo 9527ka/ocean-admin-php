@@ -77,6 +77,7 @@ class UserTokenCache extends BaseCache
             'nickname' => $user->nickname,
             'account' => $user->account,
             'email' => $user->email,
+            'is_disable' => $user->is_disable,
             'real_name' => $user->real_name,
             'invitation_code' => $user->invitation_code,
             'token' => $token,

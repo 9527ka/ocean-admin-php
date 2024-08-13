@@ -50,6 +50,11 @@ class LoginMiddleware
             return JsonService::fail('登录超时，请重新登录', [], -1, 0);
         }
 
+        // 用户注销或者被禁用
+        if (!$isNotNeedLogin && $userInfo['is_disable']) {
+            return JsonService::fail('用户已被注销或者被禁用', [], -1, 0);
+        }
+
         //token临近过期，自动续期
         if ($userInfo) {
             //获取临近过期自动续期时长
