@@ -69,4 +69,9 @@ class PasswordValidate extends BaseValidate
         return $this->only(['password', 'password_confirm']);
     }
 
+    public function sceneLogout()
+    {
+        return $this->only(['password']);
+    }
+
 }

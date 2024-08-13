@@ -111,6 +111,22 @@ class UserController extends BaseApiController
         return $this->fail(UserLogic::getError());
     }
 
+    /**
+     * @notes 注销用户
+     * @return \think\response\Json
+     * @author 段誉
+     * @date 2022/9/20 19:16
+     */
+    public function logout()
+    {
+        $params = (new PasswordValidate())->post()->goCheck('logout');
+        $result = UserLogic::logout($params, $this->userId);
+        if (true === $result) {
+            return $this->success('操作成功', [], 1, 1);
+        }
+        return $this->fail(UserLogic::getError());
+    }
+
 
     /**
      * @notes 获取小程序手机号

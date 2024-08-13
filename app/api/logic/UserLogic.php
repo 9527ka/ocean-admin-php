@@ -192,6 +192,25 @@ class UserLogic extends BaseLogic
         }
     }
 
+    public static function logout(array $params, int $userId)
+    {
+        $user = User::findOrEmpty($userId);
+        if ($user->isEmpty()) {
+            throw new \Exception(Lang::get('user_not_exist'));
+        }
+
+        // 验证老密码
+        $password = LoginLogic::getPwdEncryptString($params['old_password']);
+        if ($password != $user->password) {
+            throw new \Exception(Lang::get('old_password_invalidate'));
+        }
+
+        // 注销用户
+        $user->is_disable = 1;
+        $user->save();
+
+        return true;
+    }
 
     /**
      * @notes 获取小程序手机号
