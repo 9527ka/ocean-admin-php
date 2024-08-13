@@ -51,7 +51,7 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
      */
     public function lists(): array
     {
-        $field = "id,sn,nickname,sex,avatar,account,mobile,channel,create_time";
+        $field = "id,sn,nickname,email,real_name,points,invitation_code,sex,avatar,account,mobile,channel,create_time";
         $lists = User::withSearch($this->setSearch(), $this->params)
             ->limit($this->limitOffset, $this->limitLength)
             ->field($field)
