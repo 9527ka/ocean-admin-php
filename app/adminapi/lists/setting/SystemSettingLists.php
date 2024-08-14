@@ -33,12 +33,12 @@ class SystemSettingLists extends BaseAdminDataLists implements ListsSearchInterf
      * @notes 设置搜索条件
      * @return \string[][]
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function setSearch(): array
     {
         return [
-            '=' => ['version_no', 'key', 'status'],
+            '=' => ['version_no', 'multi_language', 'language', 'key', 'status'],
         ];
     }
 
@@ -50,12 +50,12 @@ class SystemSettingLists extends BaseAdminDataLists implements ListsSearchInterf
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function lists(): array
     {
         return SystemSetting::where($this->searchWhere)
-            ->field(['id', 'version_no', 'key', 'value', 'status'])
+            ->field(['id', 'version_no', 'multi_language', 'language', 'key', 'value', 'status'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()
@@ -67,7 +67,7 @@ class SystemSettingLists extends BaseAdminDataLists implements ListsSearchInterf
      * @notes 获取数量
      * @return int
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function count(): int
     {

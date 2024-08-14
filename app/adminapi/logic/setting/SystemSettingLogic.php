@@ -34,7 +34,7 @@ class SystemSettingLogic extends BaseLogic
      * @param array $params
      * @return bool
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public static function add(array $params): bool
     {
@@ -42,6 +42,8 @@ class SystemSettingLogic extends BaseLogic
         try {
             SystemSetting::create([
                 'version_no' => $params['version_no'],
+                'multi_language' => $params['multi_language'],
+                'language' => $params['language'],
                 'key' => $params['key'],
                 'value' => $params['value'],
                 'status' => $params['status']
@@ -62,7 +64,7 @@ class SystemSettingLogic extends BaseLogic
      * @param array $params
      * @return bool
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public static function edit(array $params): bool
     {
@@ -70,6 +72,8 @@ class SystemSettingLogic extends BaseLogic
         try {
             SystemSetting::where('id', $params['id'])->update([
                 'version_no' => $params['version_no'],
+                'multi_language' => $params['multi_language'],
+                'language' => $params['language'],
                 'key' => $params['key'],
                 'value' => $params['value'],
                 'status' => $params['status']
@@ -90,7 +94,7 @@ class SystemSettingLogic extends BaseLogic
      * @param array $params
      * @return bool
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public static function delete(array $params): bool
     {
@@ -103,7 +107,7 @@ class SystemSettingLogic extends BaseLogic
      * @param $params
      * @return array
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public static function detail($params): array
     {

@@ -33,8 +33,9 @@ class SystemSettingValidate extends BaseValidate
     protected $rule = [
         'id' => 'require',
         'version_no' => 'require',
+        'multi_language' => 'require',
+        'language' => 'require',
         'key' => 'require',
-        'value' => 'require',
         'status' => 'require',
     ];
 
@@ -46,9 +47,10 @@ class SystemSettingValidate extends BaseValidate
     protected $field = [
         'id' => 'id',
         'version_no' => '版本号',
-        'key' => '配置模块',
-        'value' => '配置项的值',
-        'status' => '是否有效',
+        'multi_language' => '是否支持多语言',
+        'language' => '语种',
+        'key' => '配置项key',
+        'status' => '是否生效',
     ];
 
 
@@ -56,11 +58,11 @@ class SystemSettingValidate extends BaseValidate
      * @notes 添加场景
      * @return SystemSettingValidate
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function sceneAdd()
     {
-        return $this->only(['version_no','key','value','status']);
+        return $this->only(['version_no','multi_language','language','key','status']);
     }
 
 
@@ -68,11 +70,11 @@ class SystemSettingValidate extends BaseValidate
      * @notes 编辑场景
      * @return SystemSettingValidate
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function sceneEdit()
     {
-        return $this->only(['id','version_no','key','value','status']);
+        return $this->only(['id','version_no','multi_language','language','key','status']);
     }
 
 
@@ -80,7 +82,7 @@ class SystemSettingValidate extends BaseValidate
      * @notes 删除场景
      * @return SystemSettingValidate
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function sceneDelete()
     {
@@ -92,7 +94,7 @@ class SystemSettingValidate extends BaseValidate
      * @notes 详情场景
      * @return SystemSettingValidate
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function sceneDetail()
     {

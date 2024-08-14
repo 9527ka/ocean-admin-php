@@ -35,7 +35,7 @@ class SystemSettingController extends BaseAdminController
      * @notes 获取列表
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function lists()
     {
@@ -47,7 +47,7 @@ class SystemSettingController extends BaseAdminController
      * @notes 添加
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function add()
     {
@@ -64,7 +64,7 @@ class SystemSettingController extends BaseAdminController
      * @notes 编辑
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function edit()
     {
@@ -81,7 +81,7 @@ class SystemSettingController extends BaseAdminController
      * @notes 删除
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function delete()
     {
@@ -95,7 +95,7 @@ class SystemSettingController extends BaseAdminController
      * @notes 获取详情
      * @return \think\response\Json
      * @author likeadmin
-     * @date 2024/08/14 22:44
+     * @date 2024/08/14 23:45
      */
     public function detail()
     {
