@@ -26,6 +26,10 @@ return [
     'code.require' => '请输入邮箱验证码',
     'invitation_code.require' => '请输入邀请码',
     'invitation_code.unique' => '邀请码已存在',
+    'invitation_code_failed' => '邀请码生辰有误，请稍后重试',
+    'account_disabled' => '账号被注销或者已被禁用',
+    'token_missing' => '请求缺少token',
+    'login_again' => '登录已过期，请重新登录',
     // 修改密码
     'old_password.require' => '请输入旧密码',
     'new_password.require' => '请输入新密码',
@@ -48,8 +52,7 @@ return [
     // 邮箱验证码
     'email_title' => '邮箱验证码',
     'email_body' => '您的验证码是: <b>%s</b>, 有效时间为: <b>%s</b>分钟',
-
-
-    // 用户
+    // 海报
+    'has_shared' => '您今天已经分享过了，请明天再来'
 
 ];

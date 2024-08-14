@@ -19,6 +19,7 @@ use app\api\logic\UserLevelLogic;
 use app\api\validate\PosterValidate;
 use app\common\model\user\User;
 use app\common\model\UserPoster;
+use think\facade\Lang;
 
 /**
  * 海报控制器
@@ -40,7 +41,7 @@ class PosterController extends BaseApiController
 
             $posterInfo = UserPoster::where('date', $date)->where('user_id', $this->userId)->findOrEmpty();
             if (!$posterInfo->isEmpty()) {
-                throw new \Exception('您今天已经分享过了，请明天再来');
+                throw new \Exception(Lang::get('has_shared'));
             }
 
 //        $userPoster = new UserPoster();

@@ -53,6 +53,6 @@ return [
     // 邮箱验证码
     'email_title' => 'Email verification code',
     'email_body' => 'Your verification code is: <b>%s</b>, Effective time is: <b>%s</b>minutes',
-
-    // 用户
+    // 分享海报
+    'has_shared' => 'You have shared today, please come back tomorrow',
 ];

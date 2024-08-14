@@ -106,7 +106,7 @@ class UserController extends BaseApiController
         $params = (new PasswordValidate())->post()->goCheck();
         $result = UserLogic::changePassword($params, $this->userId);
         if (true === $result) {
-            return $this->success('操作成功', [], 1, 1);
+            return $this->success(Lang::get('system_success'), [], 1, 1);
         }
         return $this->fail(UserLogic::getError());
     }
