@@ -26,6 +26,10 @@ return [
     'code.require' => 'code required',
     'invitation_code.require' => 'Invitation code require',
     'invitation_code.unique' => 'The invitation code already exists',
+    'invitation_code_failed' => 'Invitation code generation failed. Please try again later',
+    'account_disabled' => 'The account has been deleted or disabled',
+    'token_missing' => 'The request parameter lacks a token',
+    'login_again' => 'Login timed out, please login again',
     // 修改密码
     'old_password.require' => 'Old password require',
     'new_password.require' => 'New password require',

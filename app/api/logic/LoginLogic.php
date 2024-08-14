@@ -85,7 +85,7 @@ class LoginLogic extends BaseLogic
             $icode = self::generateReferralCode();
             $user = User::where('icode', $icode)->findOrEmpty();
             if (!$user->isEmpty()) {
-                throw new Exception('邀请码生成失败，请稍后重试');
+                throw new Exception(Lang::get('invitation_code_failed'));
             }
         }
         return $icode;
@@ -164,7 +164,7 @@ class LoginLogic extends BaseLogic
             }
 
             if ($user->is_disable) {
-                throw new \Exception(Lang::get('用户已注销活禁用'));
+                throw new \Exception(Lang::get('account_disabled'));
             }
 
             // 验证密码

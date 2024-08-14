@@ -20,6 +20,7 @@ use app\common\cache\UserTokenCache;
 use app\common\service\JsonService;
 use app\api\service\UserTokenService;
 use think\facade\Config;
+use think\facade\Lang;
 
 class LoginMiddleware
 {
@@ -40,19 +41,19 @@ class LoginMiddleware
         //不直接判断$isNotNeedLogin结果，使不需要登录的接口通过，为了兼容某些接口可以登录或不登录访问
         if (empty($token) && !$isNotNeedLogin) {
             //没有token并且该地址需要登录才能访问, 指定show为0，前端不弹出此报错
-            return JsonService::fail('请求参数缺token', [], 0, 0);
+            return JsonService::fail(Lang::get('token_missing'), [], -101, 0);
         }
 
         $userInfo = (new UserTokenCache())->getUserInfo($token);
 
         if (empty($userInfo) && !$isNotNeedLogin) {
             //token过期无效并且该地址需要登录才能访问
-            return JsonService::fail('登录超时，请重新登录', [], -1, 0);
+            return JsonService::fail(Lang::get('login_again'), [], -101, 0);
         }
 
         // 用户注销或者被禁用
         if (!$isNotNeedLogin && $userInfo['is_disable']) {
-            return JsonService::fail('用户已被注销或者被禁用', [], -1, 0);
+            return JsonService::fail(Lang::get('account_disabled'), [], -102, 0);
         }
 
         //token临近过期，自动续期
