@@ -12,7 +12,7 @@
 // | author: likeadminTeam
 // +----------------------------------------------------------------------
 
-namespace app\adminapi\validate;
+namespace app\adminapi\validate\setting;
 
 
 use app\common\validate\BaseValidate;

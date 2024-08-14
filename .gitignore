@@ -7,3 +7,6 @@
 /runtime/*
 !/runtime/index.html
 /config/install.lock
+.DS_Store
+/app/.DS_Store
+/app/adminapi/.DS_Store

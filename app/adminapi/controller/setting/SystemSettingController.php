@@ -13,13 +13,13 @@
 // +----------------------------------------------------------------------
 
 
-namespace app\adminapi\controller;
+namespace app\adminapi\controller\setting;
 
 
 use app\adminapi\controller\BaseAdminController;
-use app\adminapi\lists\SystemSettingLists;
-use app\adminapi\logic\SystemSettingLogic;
-use app\adminapi\validate\SystemSettingValidate;
+use app\adminapi\lists\setting\SystemSettingLists;
+use app\adminapi\logic\setting\SystemSettingLogic;
+use app\adminapi\validate\setting\SystemSettingValidate;
 
 
 /**

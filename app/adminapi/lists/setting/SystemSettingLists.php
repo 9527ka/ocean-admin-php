@@ -12,7 +12,7 @@
 // | author: likeadminTeam
 // +----------------------------------------------------------------------
 
-namespace app\adminapi\lists;
+namespace app\adminapi\lists\setting;
 
 
 use app\adminapi\lists\BaseAdminDataLists;

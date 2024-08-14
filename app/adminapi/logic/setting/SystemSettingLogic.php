@@ -12,7 +12,7 @@
 // | author: likeadminTeam
 // +----------------------------------------------------------------------
 
-namespace app\adminapi\logic;
+namespace app\adminapi\logic\setting;
 
 
 use app\common\model\SystemSetting;
