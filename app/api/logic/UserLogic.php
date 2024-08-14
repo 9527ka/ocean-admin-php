@@ -200,7 +200,7 @@ class UserLogic extends BaseLogic
         }
 
         // 验证老密码
-        $password = LoginLogic::getPwdEncryptString($params['old_password']);
+        $password = LoginLogic::getPwdEncryptString($params['password']);
         if ($password != $user->password) {
             throw new \Exception(Lang::get('old_password_invalidate'));
         }

@@ -51,7 +51,7 @@ class LoginMiddleware
         }
 
         // 用户注销或者被禁用
-        if ($userInfo['is_disable']) {
+        if (!$isNotNeedLogin && $userInfo['is_disable']) {
             return JsonService::fail('用户已被注销或者被禁用', [], -1, 0);
         }
 
