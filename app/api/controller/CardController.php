@@ -9,7 +9,7 @@ use app\common\service\pay\WeChatPayService;
 use app\common\model\OceanCard;
 use app\common\model\OceanCardOrder;
 use app\api\lists\OceanCardLists;
-
+use think\facade\{Db, Lang};
 /**
  * 订单与核销
  * Class PayController
@@ -17,51 +17,78 @@ use app\api\lists\OceanCardLists;
  */
 class CardController extends BaseApiController
 {
-
     public array $notNeedLogin = ['check','list'];
     
+    //是否提交分享
+    public function check(){
+        
+    }
     //下单购买
     public function order(){
         $price = request()->get('price');//面值
+        $pay_img = request()->get('pay_img');//支付凭证
+        $pay_hash = request()->get('pay_hash');//交易哈希流水号
+        
+        if(empty($price)){
+            return $this->fail(Lang::get('product_cannot_empty'));//商品不能为空
+        }
+        if(empty($pay_img)){
+            return $this->fail(Lang::get('voucher_cannot_empty'));//支付凭证不能为空
+        }
+        if(empty($pay_hash)){
+            return $this->fail(Lang::get('hash_empty'));//Hash地址不能为空
+        }
+        
         //随机取一条相同面值的礼品卡
         $info = OceanCard::where(['price' => $price,'state' => 0])->find();
         if(empty($info)){
-            return $this->fail('商品已下架，请重试');
+            return $this->fail(Lang::get('product_taken_down'));//商品已下架，请重试
         }
         
-        //系统自动生成
-        $p = [
-            'name' => 'amazon&SXF Gift Card '.$info['price'].' USD',
-            'image' => 'uploads/images/'.$info['price'].'.png',
-            'price' => $info['price'],
-            'state' => 1,
-            'serial_number' => generate_card_number(),
-            'cdk' => generate_activation_code(),
-            'redemption_state' => 0
-        ];
-        $card = OceanCard::create($p);
-        
-        //创建订单
-        $order = new OceanCardOrder();
-        
-        $pay_img = request()->get('pay_img');//支付凭证
-        
-        $order->card_id = $card->id;
-        $order->card_name = $p['name'];
-        $order->price = $p['price'];
-        $order->serial_number = $p['serial_number'];
-        $order->cdk = $p['cdk'];
-        $order->pay_img = $pay_img;
-        $order->username = $this->userInfo['nickname'];
-        $order->user_id = $this->userId;
-        $order->pay_method = 1;
-        $order->create_time = time();
-
-        if ($order->save()) {
-            return $this->success('下单成功');
+        //存在待审核订单时  拦截
+        $already = OceanCardOrder::where(['user_id' => $this->userId,'state' => 0])->value('id');
+        if($already){
+            return $this->fail(Lang::get('order_pending'));//商品已下架，请重试
         }
-
-        return $this->data([]);
+        Db::startTrans();
+        try {
+            //系统自动生成
+            $p = [
+                'name' => 'amazon&SXF Gift Card '.$info['price'].' USD',
+                'image' => 'uploads/images/'.$info['price'].'.png',
+                'price' => $info['price'],
+                'state' => 1,
+                'serial_number' => generate_card_number(),
+                'cdk' => generate_activation_code(),
+                'redemption_state' => 0
+            ];
+            $card = OceanCard::create($p);
+            
+            //创建订单
+            $order = new OceanCardOrder();
+            
+            $order->card_id = $card->id;
+            $order->card_name = $p['name'];
+            $order->price = $p['price'];
+            $order->card_img = $p['image'];
+            $order->serial_number = $p['serial_number'];
+            $order->cdk = $p['cdk'];
+            $order->username = $this->userInfo['nickname'];
+            $order->user_id = $this->userId;
+            $order->pay_hash = $pay_hash;
+            $order->pay_img = $pay_img;
+            $order->pay_method = 1;
+            $order->create_time = time();
+            $sta = $order->save();
+            Db::commit();
+            if ($sta) {
+                return $this->success(Lang::get('order_succees'));//下单成功，请等待审核
+            }
+        } catch (\Exception $e) {
+            Db::rollback();
+            // $e->getMessage();
+            return $this->success(Lang::get('order_fail'));//下单失败，请重试
+        }
     }
     /**
      * @notes 礼品卡列表

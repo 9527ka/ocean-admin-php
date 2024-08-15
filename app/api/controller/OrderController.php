@@ -7,7 +7,7 @@ use app\common\logic\PaymentLogic;
 use app\common\service\pay\AliPayService;
 use app\common\service\pay\WeChatPayService;
 use app\common\model\OceanCardOrder;
-
+use app\api\lists\OceanCardOrderLists;
 /**
  * 订单与核销
  * Class PayController
@@ -17,7 +17,14 @@ class OrderController extends BaseApiController
 {
 
     public array $notNeedLogin = ['notifyOa', 'aliNotify'];
-
+    
+    /**
+     * @notes 订单列表
+     */
+    public function list()
+    {
+        return $this->dataLists(new OceanCardOrderLists());
+    }
     /**
      * @notes 预支付
      * @return \think\response\Json

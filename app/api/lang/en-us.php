@@ -55,4 +55,13 @@ return [
     'email_body' => 'Your verification code is: <b>%s</b>, Effective time is: <b>%s</b>minutes',
     // 分享海报
     'has_shared' => 'You have shared today, please come back tomorrow',
+    
+    //下单
+    'product_cannot_empty' => 'The product cannot be empty',
+    'voucher_cannot_empty' => 'Payment voucher cannot be empty',
+    'hash_empty' => 'Hash address cannot be empty',
+    'product_taken_down' => 'The product has been taken down, please try again',
+    'order_succees' => 'Order successfully placed, please wait for review',
+    'order_fail' => 'Order failed, please try again',
+    'order_pending' => 'You still have pending orders for review'
 ];
