@@ -20,7 +20,7 @@ class CardController extends BaseApiController
     public array $notNeedLogin = ['check','list'];
     
     //是否提交分享
-    public function check(){
+    public function checks(){
         
     }
     //下单购买

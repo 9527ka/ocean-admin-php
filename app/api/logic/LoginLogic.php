@@ -28,7 +28,7 @@ use app\common\service\{
     wechat\WeChatRequestService
 };
 use app\common\model\user\{User, UserAuth};
-use think\facade\{Db, Config, Lang, Session};
+use think\facade\{Cache, Db, Config, Lang, Session};
 
 /**
  * 登录逻辑
@@ -50,11 +50,10 @@ class LoginLogic extends BaseLogic
         $sessionKey = self::getEmailSessionKey($email);
         $code = rand(100000, 999999);
 
-        return true;
         // 发送验证码
         $emailLogic = new MailLogic();
         if ($emailLogic->sendVerificationEmail($email, $code)) {
-            Session::set($sessionKey, ['code' => $code, 'time' => time()]);
+            Cache::set($sessionKey, json_encode(['code' => $code, 'time' => time()], JSON_UNESCAPED_UNICODE), 360);
            return true;
         } else {
             return false;
@@ -103,16 +102,18 @@ class LoginLogic extends BaseLogic
         try {
             // 验证码校验
             $sessionKey = self::getEmailSessionKey($params['email']);
-            $codeInfo = Session::get($sessionKey);
-//            if (empty($codeInfo['code'])) {
-//                throw new \Exception(Lang::get('code_empty'));
-//            }
-//            if (time() - $codeInfo['time'] >= MailLogic::EMAIL_CODE_EXPIRE * 60) {
-//                throw new \Exception(Lang::get('code_expired'));
-//            }
-//            if ($codeInfo['code'] != $params['code']) {
-//                throw new \Exception(Lang::get('code_invalidate'));
-//            }
+            $cacheData = Cache::get($sessionKey);
+
+            if (empty($cacheData)) {
+                throw new \Exception(Lang::get('code_empty'));
+            }
+            $codeInfo = json_decode($cacheData, true);
+            if (time() - $codeInfo['time'] >= MailLogic::EMAIL_CODE_EXPIRE * 60) {
+                throw new \Exception(Lang::get('code_expired'));
+            }
+            if ($codeInfo['code'] != $params['code']) {
+                throw new \Exception(Lang::get('code_invalidate'));
+            }
 
             $icode = self::getIcode();
 
