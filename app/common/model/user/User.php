@@ -172,5 +172,10 @@ class User extends BaseModel
         return $sn;
     }
 
+    public function parentUser(): \think\model\relation\HasOne
+    {
+        return $this->hasOne(User::class, 'icode', 'invitation_code');
+    }
+
 
 }

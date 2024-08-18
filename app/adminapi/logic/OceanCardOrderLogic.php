@@ -17,7 +17,9 @@ namespace app\adminapi\logic;
 
 use app\common\model\OceanCardOrder;
 use app\common\logic\BaseLogic;
+use app\common\model\user\User;
 use think\facade\Db;
+use think\facade\Lang;
 
 
 /**
@@ -31,7 +33,21 @@ class OceanCardOrderLogic extends BaseLogic
     {
         Db::startTrans();
         try {
+            $orderInfo = OceanCardOrder::where('id', $params['id'])->findOrEmpty();
+            if ($orderInfo->isEmpty()) {
+                throw new \Exception(Lang::get('订单数据不存在'));
+            }
+            if ($orderInfo->state != 0) {
+                throw new \Exception(Lang::get('当前订单数据已经审核操作过了，无需审核操作'));
+            }
+
             OceanCardOrder::where('id', $params['id'])->update(['state' => $params['state']]);
+
+            // 审核通过 - 给下单用户的上级新增积分
+            if ($params['state'] == 1) {
+                $userInfo = User::where('id', $orderInfo->user_id)->findOrEmpty();
+
+            }
 
             Db::commit();
             return true;
