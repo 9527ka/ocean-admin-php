@@ -74,8 +74,8 @@ class PosterController extends BaseApiController
 
     public function testMongodb()
     {
-        $userInfo = User::where('id', 16)->findOrEmpty();
-halt($userInfo);
+//        $userInfo = User::where('id', 16)->findOrEmpty();
+//halt($userInfo?->parentUser?->id);
 
         $date = date('Y-m-d');
             // 分页查询

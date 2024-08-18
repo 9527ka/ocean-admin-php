@@ -1,9 +1,11 @@
 <?php
 namespace app\api\controller;
 
+use app\api\logic\UserLevelLogic;
 use app\api\validate\PayValidate;
 use app\common\enum\user\UserTerminalEnum;
 use app\common\logic\PaymentLogic;
+use app\common\model\user\User;
 use app\common\service\pay\AliPayService;
 use app\common\service\pay\WeChatPayService;
 use app\common\model\OceanCard;
@@ -63,6 +65,13 @@ class CardController extends BaseApiController
                 'redemption_state' => 0
             ];
             $card = OceanCard::create($p);
+
+            // 计算价格 - 根据当前用户等级，计算优惠折扣 - 查询当前用户最新的积分数据
+            $point = User::where('id', $this->userId)->value('points');
+            $discount = $point ? (UserLevelLogic::getUserLevel($point)['discount'] ?? 10) / 10 : 1;
+
+            // 精密计算 - 防止失精导致多位小数点
+            $p['price'] = bcmul($p['price'], $discount, 2);
             
             //创建订单
             $order = new OceanCardOrder();
