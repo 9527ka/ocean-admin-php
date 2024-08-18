@@ -75,12 +75,24 @@ class PosterController extends BaseApiController
     public function testMongodb()
     {
         $date = date('Y-m-d');
-        $userPoster = new TestData();
-        $userPoster->user_id = $this->userId;
-        $userPoster->date = $date;
-        $userPoster->poster_images = json_encode(['aaaa', 'bbbb']);
-        $userPoster->create_time = time();
-        $userPoster->audit_status = 0;  // 初始状态为未审核
+            // 分页查询
+    // $posters = TestData::paginate([
+    //     'page'  => 1,
+    //     'list_rows' => 10
+    // ]);
+
+    // return json(['status' => 'success', 'data' => $posters]);
+        
+        
+        TestData::create([
+            'user_id'       => $this->userId,
+            'poster_images' => ['image1.jpg', 'image2.jpg'],
+            'date'          => $date,
+            'create_time'   => time(),
+            'audit_status'  => 0
+        ]);
+        
+
     }
 
     public function shareList()

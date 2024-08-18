@@ -16,11 +16,11 @@ class IndexController extends BaseController
      * @author 段誉
      * @date 2022/10/27 18:12
      */
-    public function index($name = '你好,likeadmin')
+    public function index($name = 'hello')
     {
-        $template = app()->getRootPath() . 'public/pc/index.html';
+        $template = app()->getRootPath() . 'public/index.html';
         if (Request::isMobile()) {
-            $template = app()->getRootPath() . 'public/mobile/index.html';
+            $template = app()->getRootPath() . 'public/index.html';
         }
         if (file_exists($template)) {
             return view($template);

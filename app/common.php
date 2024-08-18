@@ -3,6 +3,16 @@
 use app\common\service\FileService;
 use think\helper\Str;
 
+//剔除空数组
+function filtered_array($array){
+    $arr = [];
+    foreach ($array as $k => $v){
+        if($v != ''){
+            array_push($arr,[$k,'=',$v]);
+        }
+    }
+    return $arr;
+}
 //格式化卡号
 function format_card_number($number) {
     // 使用正则表达式在每四位数字后插入一个空格

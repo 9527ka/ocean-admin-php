@@ -22,6 +22,7 @@ use app\common\lists\BaseDataLists;
 use app\common\lists\ListsExcelInterface;
 use app\common\lists\ListsExtendInterface;
 use think\Response;
+use think\facade\Lang;
 use think\response\Json;
 use think\exception\HttpResponseException;
 
@@ -69,7 +70,7 @@ class JsonService
      */
     public static function data($data): Json
     {
-        return self::success('', $data, 1, 0);
+        return self::success(Lang::get('system_success'), $data, 1, 0);
     }
 
 

@@ -60,7 +60,7 @@ return [
         // 更多的数据库配置信息
         'mongo' => [
             'type'            => 'mongo',
-            'dsn'              => env('mongodb.dsn', 'mongodb://ocean@127.0.0.1:27017/ocean'),
+            'dsn'              => env('mongodb.dsn', 'mongodb://ocean_db:dsAwhxxs5bErMyAh@127.0.0.1:27017/ocean_db'),
             // 服务器地址
             'hostname'        => env('mongodb.hostname', '127.0.0.1'),
             // 数据库名

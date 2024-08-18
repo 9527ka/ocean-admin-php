@@ -39,7 +39,7 @@ class OceanCardOrderLists extends BaseApiDataLists implements ListsSearchInterfa
      */
     public function queryWhere()
     {
-        $where[] = ['state', '=', 0];
+        $where[] = ['state', '>', -1];
         if (!empty($this->params['keyword'])) {
 //            $where[] = ['title', 'like', '%' . $this->params['keyword'] . '%'];
         }

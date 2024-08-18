@@ -39,10 +39,10 @@ class OceanCardLists extends BaseAdminDataLists implements ListsExcelInterface
     public function setSearch(): array
     {
         
-        // return [
-        //     '=' => ['name', 'price', 'state', 'serial_number', 'cdk', 'redemption_state'],
-        //     'between_time' => ['create_time']
-        // ];
+        return [
+            '=' => ['name', 'price', 'state', 'serial_number', 'cdk', 'redemption_state'],
+            'between_time' => ['create_time']
+        ];
         $allowSearch = ['name', 'price', 'state', 'serial_number', 'cdk', 'redemption_state'];
         return array_intersect(array_keys($this->params), $allowSearch);
     }
@@ -59,13 +59,37 @@ class OceanCardLists extends BaseAdminDataLists implements ListsExcelInterface
      */
     public function lists(): array
     {
-        return OceanCard::where($this->searchWhere)
-            ->field(['id', 'name', 'image', 'price', 'state', 'serial_number', 'cdk', 'redemption_state'])
+        $p = $this->params;
+        
+        unset($p['page_size']);
+        unset($p['page_no']);
+        $arr = filtered_array($p);
+        $map = [];
+        foreach ($arr as $v){
+            if(in_array('start_time',$v)){
+                array_push($map,['create_time','between',[strtotime($p['start_time']),strtotime($p['end_time'])]]);
+                continue;
+            }
+            if(in_array('end_time',$v)) continue;
+            if(in_array('page_type',$v)) continue;
+            if(in_array('page_start',$v)) continue;
+            if(in_array('page_end',$v)) continue;
+            if(in_array('file_name',$v)) continue;
+            if(in_array('export',$v)) continue;
+            
+            array_push($map,$v);
+        }
+        // echo json_encode($map);die;
+        $list = OceanCard::where($map)
+            ->field(['id', 'name', 'image', 'price', 'state', 'serial_number', 'cdk', 'redemption_state','create_time'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()
             ->toArray();
-            
+        // echo OceanCard::getlastsql();die;
+        return $list;
+        
+        
         $field = 'id,name,image,price,state,serial_number,cdk,redemption_state';
         $lists = OceanCard::withSearch($this->setSearch(), $this->params)
             ->limit($this->limitOffset, $this->limitLength)
