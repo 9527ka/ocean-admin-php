@@ -17,6 +17,7 @@ namespace app\api\controller;
 use app\api\lists\UserPosterLists;
 use app\api\logic\UserLevelLogic;
 use app\api\validate\PosterValidate;
+use app\common\model\TestData;
 use app\common\model\user\User;
 use app\common\model\UserPoster;
 use think\facade\Lang;
@@ -28,7 +29,7 @@ use think\facade\Lang;
  */
 class PosterController extends BaseApiController
 {
-    public array $notNeedLogin = ['resetPassword'];
+    public array $notNeedLogin = ['resetPassword', 'testMongodb'];
 
     public function saveSharePoster()
     {
@@ -69,6 +70,17 @@ class PosterController extends BaseApiController
         } catch (\Throwable $e) {
             return $this->fail('系统错误');
         }
+    }
+
+    public function testMongodb()
+    {
+        $date = date('Y-m-d');
+        $userPoster = new TestData();
+        $userPoster->user_id = $this->userId;
+        $userPoster->date = $date;
+        $userPoster->poster_images = json_encode(['aaaa', 'bbbb']);
+        $userPoster->create_time = time();
+        $userPoster->audit_status = 0;  // 初始状态为未审核
     }
 
     public function shareList()
