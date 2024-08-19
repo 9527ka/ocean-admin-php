@@ -63,5 +63,7 @@ return [
     'product_taken_down' => 'The product has been taken down, please try again',
     'order_succees' => 'Order successfully placed, please wait for review',
     'order_fail' => 'Order failed, please try again',
-    'order_pending' => 'You still have pending orders for review'
+    'order_pending' => 'You still have pending orders for review',
+    'order_hash_already' => 'Hash address already exists'
+    
 ];

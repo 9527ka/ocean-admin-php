@@ -50,7 +50,11 @@ class CardController extends BaseApiController
         //存在待审核订单时  拦截
         $already = OceanCardOrder::where(['user_id' => $this->userId,'state' => 0])->value('id');
         if($already){
-            return $this->fail(Lang::get('order_pending'));//商品已下架，请重试
+            return $this->fail(Lang::get('order_pending'));//存在待审核订单，请重试
+        }
+        $hash = OceanCardOrder::where(['pay_hash' => $pay_hash])->value('id');
+        if($hash){
+            return $this->fail(Lang::get('order_hash_already'));//哈希地址已存在
         }
         Db::startTrans();
         try {
