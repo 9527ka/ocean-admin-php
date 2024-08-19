@@ -55,9 +55,11 @@ class RegisterValidate extends BaseValidate
     ];
 
     protected $rule = [
-        'account' => 'require|length:3,12|unique:' . User::class . '|regex:register',
+        // 'account' => 'require|length:3,12|unique:' . User::class . '|regex:register',
+        'account' => 'require|length:3,12|unique:' . User::class,
         'full_name' => 'require',
-        'password' => 'require|length:6,20|regex:password',
+        // 'password' => 'require|length:6,20|regex:password',
+        'password' => 'require|length:6,20',
         'password_confirm' => 'require|confirm',
         'phone_number' => 'require',
         'email' => 'require|email',

@@ -76,12 +76,12 @@ class LoginLogic extends BaseLogic
         return substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, $length);
     }
 
-    public static function getIcode(int $length = 10): string
+    public static function getIcode(int $length = 6): string
     {
-        $icode = self::generateReferralCode();
+        $icode = self::generateReferralCode($length);
         $user = User::where('icode', $icode)->findOrEmpty();
         if (!$user->isEmpty()) {
-            $icode = self::generateReferralCode();
+            $icode = self::generateReferralCode($length);
             $user = User::where('icode', $icode)->findOrEmpty();
             if (!$user->isEmpty()) {
                 throw new Exception(Lang::get('invitation_code_failed'));

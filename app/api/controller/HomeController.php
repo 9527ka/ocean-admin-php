@@ -34,7 +34,7 @@ class HomeController extends BaseApiController
 {
 
 
-    public array $notNeedLogin = ['news', 'animals', 'plants'];
+    public array $notNeedLogin = ['news', 'animals', 'plants','newsDetail','animalsDetail','plantsDetail'];
 
 
     public function news()
@@ -50,6 +50,28 @@ class HomeController extends BaseApiController
     public function plants()
     {
         return $this->dataLists(new PlantsLists());
+    }
+    
+    public function newsDetail()
+    {
+        $id = $this->request->get('id/d');
+        $result = Article::where($id, $id)->find()->toArray();
+        return $this->data($result);
+    }
+    
+    public function animalsDetail()
+    {
+        $id = $this->request->get('id/d');
+        $result = Animals::where($id, $id)->find()->toArray();
+        
+        return $this->data($result);
+    }
+    
+    public function plantsDetail()
+    {
+        $id = $this->request->get('id/d');
+        $result = Plants::where($id, $id)->find()->toArray();
+        return $this->data($result);
     }
 
 }

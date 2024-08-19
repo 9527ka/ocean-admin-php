@@ -27,12 +27,19 @@ use app\common\model\user\User;
  */
 class StatisticsLogic extends BaseLogic
 {
-    public static function handle(int $startTime, int $endTime)
+    public static function handle()
     {
 
         $startTime = strtotime('yesterday 00:00:00');
         $endTime = strtotime('yesterday 23:59:59');
         $date = date('Y-m-d', $startTime);
+        
+        // 如果已经生成过 - 不再执行
+        $daliyInfo = DailyStatistics::where('date', $date)->findOrEmpty();
+        if (!$daliyInfo->isEmpty()) {
+            return;
+        }
+        
         // 总用户数
         $totalUsers = User::count();
         // 昨日新增用户数
