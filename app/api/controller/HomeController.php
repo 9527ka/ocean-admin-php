@@ -55,14 +55,14 @@ class HomeController extends BaseApiController
     public function newsDetail()
     {
         $id = $this->request->get('id/d');
-        $result = Article::where($id, $id)->find()->toArray();
+        $result = Article::where('id', $id)->find()->toArray();
         return $this->data($result);
     }
     
     public function animalsDetail()
     {
         $id = $this->request->get('id/d');
-        $result = Animals::where($id, $id)->find()->toArray();
+        $result = Animals::where('id', $id)->find()->toArray();
         
         return $this->data($result);
     }
@@ -70,7 +70,7 @@ class HomeController extends BaseApiController
     public function plantsDetail()
     {
         $id = $this->request->get('id/d');
-        $result = Plants::where($id, $id)->find()->toArray();
+        $result = Plants::where('id', $id)->find()->toArray();
         return $this->data($result);
     }
 
