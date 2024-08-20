@@ -15,7 +15,6 @@ namespace app\adminapi\logic\user;
 
 use app\api\logic\UserLevelLogic;
 use app\common\enum\user\AccountLogEnum;
-use app\common\enum\user\UserTerminalEnum;
 use app\common\logic\AccountLogLogic;
 use app\common\logic\BaseLogic;
 use app\common\model\user\User;
@@ -127,11 +126,14 @@ class UserLogic extends BaseLogic
         // 今日分享数 [@todo 统计数据 后续可以统一新建统计表，不用每次去查询]
         $todayShareCount = UserPoster::whereIn('user_id', $user_ids)->where('date', date('Y-m-d'))->count();
         // 有分享记录的账号总数
-        $shareUserCount = UserPoster::whereIn('user_id', $user_ids)->group('user_id')->field('DISTINCT user_id')->find();
+        $shareUserCount = UserPoster::whereIn('user_id', $user_ids)->group('user_id')->field('DISTINCT user_id')->count();
 
         // 用户等级 - 分值对应的优惠比例
         $discount = UserLevelLogic::getUserLevel($user->points)['discount'] ?? 0;
         $levelName = UserLevelLogic::getUserLevel($user->points)['name'] ?? '';
+
+        // 有充值记录的账号数
+        $rechargeUserCount = OceanCardOrder::field('user_id')->whereIn('user_id', $user_ids)->where('state', 1)->distinct(true)->count();
 
 //        $user['channel'] = UserTerminalEnum::getTermInalDesc($user['channel']);
         $user->sex = $user->getData('sex');
@@ -141,6 +143,7 @@ class UserLogic extends BaseLogic
         $userInfo['subordinate_count'] = count(explode(',',$user_ids))+1;//下级总数
         $userInfo['today_share_count'] = $todayShareCount;//今日分享数
         $userInfo['has_share_user_count'] = $shareUserCount;//有分享记录的账号总数
+        $userInfo['recharge_user_count'] = $rechargeUserCount;//有充值记录的账号总数
         $userInfo['user_discount'] = $discount;//用户等级
         $userInfo['user_level_name'] = $levelName;//等级名称
 

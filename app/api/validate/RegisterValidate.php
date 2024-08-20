@@ -62,7 +62,7 @@ class RegisterValidate extends BaseValidate
         'password' => 'require|length:6,20',
         'password_confirm' => 'require|confirm',
         'phone_number' => 'require',
-        'email' => 'require|email',
+        'email' => 'require|email|unique:' . User::class,
         'code' => 'require|length:6|integer',
 //        'invitation_code' => 'require|unique:' . User::class,
     ];
