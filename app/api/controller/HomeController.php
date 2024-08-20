@@ -14,7 +14,6 @@
 
 namespace app\api\controller;
 
-
 use app\api\lists\AnimalLists;
 use app\api\lists\ArticleLists;
 use app\api\lists\PlantsLists;
@@ -22,6 +21,7 @@ use app\api\logic\IndexLogic;
 use app\common\model\Animals;
 use app\common\model\Article;
 use app\common\model\Plants;
+use app\common\model\SystemSetting;
 use think\response\Json;
 
 
@@ -33,8 +33,7 @@ use think\response\Json;
 class HomeController extends BaseApiController
 {
 
-
-    public array $notNeedLogin = ['news', 'animals', 'plants','newsDetail','animalsDetail','plantsDetail'];
+    public array $notNeedLogin = ['config','news', 'animals', 'plants','newsDetail','animalsDetail','plantsDetail'];
 
 
     public function news()
@@ -71,6 +70,10 @@ class HomeController extends BaseApiController
     {
         $id = $this->request->get('id/d');
         $result = Plants::where('id', $id)->find()->toArray();
+        return $this->data($result);
+    }
+    public function config(){
+        $result = SystemSetting::where('status',1)->field('key,value')->select()->toArray();
         return $this->data($result);
     }
 

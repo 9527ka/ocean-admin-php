@@ -26,7 +26,13 @@ use app\adminapi\validate\user\UserValidate;
  */
 class UserController extends BaseAdminController
 {
-
+    //统计信息
+    public function count($id){
+        $detail = UserLogic::detail($id);
+        return $this->success('', $detail);
+    }
+    //上级会员：邀请码，下级总数，今日分享
+    
     /**
      * @notes 用户列表
      * @return \think\response\Json

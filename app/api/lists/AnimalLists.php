@@ -70,6 +70,7 @@ class AnimalLists extends BaseApiDataLists implements ListsSearchInterface
      */
     public function lists(): array
     {
+        $act = $this->request->get('act/s');
 //        $orderRaw = 'sort desc, id desc';
         $orderRaw = 'create_time desc';
         $sortType = $this->params['sort'] ?? 'default';
@@ -82,13 +83,22 @@ class AnimalLists extends BaseApiDataLists implements ListsSearchInterface
 //            $orderRaw = 'click_actual + click_virtual desc, id desc';
 //        }
 
-        $field = '*';
-        $result = Animals::field($field)
-            ->where($this->queryWhere())
-            ->where($this->searchWhere)
-            ->orderRaw($orderRaw)
-            ->limit($this->limitOffset, $this->limitLength)
-            ->select()->toArray();
+        $field = 'id,title,desc,is_recommend,image,is_show,create_time';
+        if($act == 'home'){
+            $result = Animals::field($field)
+                ->where($this->queryWhere())
+                ->where($this->searchWhere)
+                ->orderRaw($orderRaw)
+                ->limit(6)
+                ->select()->toArray();
+        }else{
+            $result = Animals::field($field)
+                ->where($this->queryWhere())
+                ->where($this->searchWhere)
+                ->orderRaw($orderRaw)
+                ->limit($this->limitOffset, $this->limitLength)
+                ->select()->toArray();
+        }
 
         return $result;
     }

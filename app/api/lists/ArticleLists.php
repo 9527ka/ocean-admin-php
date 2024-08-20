@@ -70,6 +70,7 @@ class ArticleLists extends BaseApiDataLists implements ListsSearchInterface
      */
     public function lists(): array
     {
+        $act = $this->request->get('act/s');
 //        $orderRaw = 'sort desc, id desc';
         $orderRaw = 'date asc';
 //        $sortType = $this->params['sort'] ?? 'default';
@@ -82,14 +83,22 @@ class ArticleLists extends BaseApiDataLists implements ListsSearchInterface
 //            $orderRaw = 'click_actual + click_virtual desc, id desc';
 //        }
 
-        $field = '*';
-        $result = Article::field($field)
-            ->where($this->queryWhere())
-            ->where($this->searchWhere)
-            ->orderRaw($orderRaw)
-            ->limit($this->limitOffset, $this->limitLength)
-            ->select()->toArray();
-
+        $field = 'id,title,desc,theme,is_quality,date,image';
+        if($act == 'home'){
+            $result = Article::field($field)
+                ->where($this->queryWhere())
+                ->where($this->searchWhere)
+                ->orderRaw($orderRaw)
+                ->limit(6)
+                ->select()->toArray();
+        }else{
+            $result = Article::field($field)
+                ->where($this->queryWhere())
+                ->where($this->searchWhere)
+                ->orderRaw($orderRaw)
+                ->limit($this->limitOffset, $this->limitLength)
+                ->select()->toArray();
+        }
         return $result;
     }
 

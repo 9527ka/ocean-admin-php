@@ -107,14 +107,18 @@ class LoginLogic extends BaseLogic
             if (empty($cacheData)) {
                 throw new \Exception(Lang::get('code_empty'));
             }
-            $codeInfo = json_decode($cacheData, true);
-            if (time() - $codeInfo['time'] >= MailLogic::EMAIL_CODE_EXPIRE * 60) {
-                throw new \Exception(Lang::get('code_expired'));
+            // $codeInfo = json_decode($cacheData, true);
+            // if (time() - $codeInfo['time'] >= MailLogic::EMAIL_CODE_EXPIRE * 60) {
+            //     throw new \Exception(Lang::get('code_expired'));
+            // }
+            // if ($codeInfo['code'] != $params['code']) {
+            //     throw new \Exception(Lang::get('code_invalidate'));
+            // }
+            //检查邀请码是否存在
+            $parent_id = User::where('icode',$params['invitation_code'])->value('id');
+            if(!$parent_id){
+                throw new \Exception(Lang::get('invitation_code_error'));
             }
-            if ($codeInfo['code'] != $params['code']) {
-                throw new \Exception(Lang::get('code_invalidate'));
-            }
-
             $icode = self::getIcode();
 
             $userSn = User::createUserSn();
@@ -132,6 +136,7 @@ class LoginLogic extends BaseLogic
                 'invitation_code' => $params['invitation_code'] ?? '',
                 'mobile' => $params['phone_number'],
                 'icode' => $icode,
+                'parent_id' => $parent_id ?? 0
             ]);
 
             return true;

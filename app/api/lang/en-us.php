@@ -13,7 +13,7 @@ return [
     // 登录注册模块
     'account.require' => 'Account required',
     'account.regex' => 'Account number must be alphanumeric',
-    'account.length' => 'The account number must be between 3 and 12 digits',
+    'account.length' => 'The account number must be between 6 and 12 digits',
     'account.unique' => 'Account already exists',
     'full_name.require' => 'Full name required',
     'password.require' => 'Password required',
@@ -64,6 +64,7 @@ return [
     'order_succees' => 'Order successfully placed, please wait for review',
     'order_fail' => 'Order failed, please try again',
     'order_pending' => 'You still have pending orders for review',
-    'order_hash_already' => 'Hash address already exists'
+    'order_hash_already' => 'Hash address already exists',
+    'invitation_code_error' => 'Invitation code does not exist'
     
 ];
