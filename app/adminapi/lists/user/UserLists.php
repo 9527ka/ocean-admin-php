@@ -35,7 +35,11 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
      */
     public function setSearch(): array
     {
-        $allowSearch = ['keyword', 'channel', 'create_time_start', 'create_time_end'];
+        return [
+            '=' => ['account', 'email', 'mobile', 'serial_number', 'cdk', 'username', 'pay_method'],
+            'between_time' => ['create_time'],
+        ];
+        $allowSearch = ['account', 'email', 'mobile', 'create_time_start', 'create_time_end'];
         return array_intersect(array_keys($this->params), $allowSearch);
     }
 
@@ -59,28 +63,51 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
             ->field([
                 'u1.id as user_id',
                 'u1.account as user_name',
+                'u1.create_time',
                 'u2.id as child_1_id',
                 'u2.account as child_1_name',
-                'u1.create_time'
+                'u2.create_time as child_1_create_time',
                 // 'u3.id as child_2_id',
                 // 'u3.account as child_2_name',
             ])
             ->limit($this->limitOffset, $this->limitLength)
-            // ->order('u1.id desc')
+            ->order('u1.id desc')
             ->select()->toArray();
+            foreach ($lists as &$item) {
+                $item['child_1_create_time'] = date('Y-m-d H:i:s',$item['child_1_create_time']);
+            }
             return $lists;
         }
         
+        $p = $this->params;
+        unset($p['page_size']);
+        unset($p['page_no']);
+        $arr = filtered_array($p);
+        $map = [];
+        foreach ($arr as $v){
+            if(in_array('start_time',$v)){
+                array_push($map,['create_time','between',[strtotime($p['start_time']),strtotime($p['end_time'])]]);
+                continue;
+            }
+            if(in_array('end_time',$v)) continue;
+            if(in_array('page_type',$v)) continue;
+            if(in_array('page_start',$v)) continue;
+            if(in_array('page_end',$v)) continue;
+            if(in_array('file_name',$v)) continue;
+            if(in_array('export',$v)) continue;
+            
+            array_push($map,$v);
+        }
         $field = "id,sn,nickname,email,real_name,points,icode,sex,avatar,account,mobile,channel,create_time";
-        $lists = User::withSearch($this->setSearch(), $this->params)
+        $lists = User::where($map)
             ->limit($this->limitOffset, $this->limitLength)
             ->field($field)
             ->order('id desc')
             ->select()->toArray();
 
-        foreach ($lists as &$item) {
-            $item['channel'] = UserTerminalEnum::getTermInalDesc($item['channel']);
-        }
+        // foreach ($lists as &$item) {
+        //     $item['channel'] = UserTerminalEnum::getTermInalDesc($item['channel']);
+        // }
 
         return $lists;
     }
@@ -94,6 +121,7 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
      */
     public function count(): int
     {
+        return User::where($this->searchWhere)->count();
         return User::withSearch($this->setSearch(), $this->params)->count();
     }
 

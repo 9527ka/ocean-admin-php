@@ -15,6 +15,7 @@ namespace app\adminapi\logic\user;
 
 use app\api\logic\UserLevelLogic;
 use app\common\enum\user\AccountLogEnum;
+use app\common\enum\user\UserTerminalEnum;
 use app\common\logic\AccountLogLogic;
 use app\common\logic\BaseLogic;
 use app\common\model\user\User;
@@ -88,7 +89,7 @@ class UserLogic extends BaseLogic
         $field = [
             'id', 'sn', 'account', 'nickname', 'avatar', 'real_name',
             'sex', 'mobile', 'create_time', 'login_time', 'channel',
-            'user_money', 'invitation_code', 'icode', 'email', 'points'
+            'user_money', 'invitation_code', 'icode', 'email', 'points','parent_id'
         ];
 
         $user = User::where(['id' => $userId])->field($field)
@@ -100,8 +101,8 @@ class UserLogic extends BaseLogic
 
         // 上级用户[如果存在]
         $icodeUser = [];
-        if ($user->invitation_code) {
-            $icodeUser = User::where(['icode' => $user->invitation_code])->field($field)->findOrEmpty();
+        if ($user->parent_id) {
+            $icodeUser = User::where(['id' => $user->parent_id])->field($field)->findOrEmpty();
         }
         //获取一二级用户id，用逗号拼接
         $users = User::alias('u1')
@@ -120,32 +121,25 @@ class UserLogic extends BaseLogic
         if(!empty($users)){
             $user_ids = $users['all_child_ids'];
         }
-        // 下级总数
-        // $subordinateUserIds = User::where('invitation_code', $user->icode)->where('is_disable', 0)->column('id');
-
-        // 今日分享数 [@todo 统计数据 后续可以统一新建统计表，不用每次去查询]
-        $todayShareCount = UserPoster::whereIn('user_id', $user_ids)->where('date', date('Y-m-d'))->count();
         // 有分享记录的账号总数
-        $shareUserCount = UserPoster::whereIn('user_id', $user_ids)->group('user_id')->field('DISTINCT user_id')->count();
-
+        $shareUserCount = UserPoster::whereIn('user_id', $user_ids)->group('user_id')->count();
+        //统计下单总数
+        $orderCount = OceanCardOrder::whereIn('user_id',$user_ids)->count();
+        //统计总充值
+        $orderTotal = OceanCardOrder::whereIn('user_id',$user_ids)->sum('price');
         // 用户等级 - 分值对应的优惠比例
         $discount = UserLevelLogic::getUserLevel($user->points)['discount'] ?? 0;
         $levelName = UserLevelLogic::getUserLevel($user->points)['name'] ?? '';
 
-        // 有充值记录的账号数
-        $rechargeUserCount = OceanCardOrder::field('user_id')->whereIn('user_id', $user_ids)->where('state', 1)->distinct(true)->count();
-
-//        $user['channel'] = UserTerminalEnum::getTermInalDesc($user['channel']);
         $user->sex = $user->getData('sex');
         $userInfo = $user->toArray();
         // 上级用户
         $userInfo['parent_account'] = $icodeUser['account'] ?? '';
-        $userInfo['subordinate_count'] = count(explode(',',$user_ids))+1;//下级总数
-        $userInfo['today_share_count'] = $todayShareCount;//今日分享数
+        $userInfo['subordinate_count'] = count(explode(',',$user_ids));//下级总人数
         $userInfo['has_share_user_count'] = $shareUserCount;//有分享记录的账号总数
-        $userInfo['recharge_user_count'] = $rechargeUserCount;//有充值记录的账号总数
         $userInfo['user_discount'] = $discount;//用户等级
-        $userInfo['user_level_name'] = $levelName;//等级名称
+        $userInfo['order_count'] = $orderCount;//下单总数
+        $userInfo['order_total'] = $orderTotal;//下单总额
 
         return $userInfo;
     }

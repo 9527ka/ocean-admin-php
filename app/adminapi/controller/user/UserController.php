@@ -31,7 +31,6 @@ class UserController extends BaseAdminController
         $detail = UserLogic::detail($id);
         return $this->success('', $detail);
     }
-    //上级会员：邀请码，下级总数，今日分享
     
     /**
      * @notes 用户列表
