@@ -12,3 +12,4 @@
 /app/adminapi/.DS_Store
 /public/admin*
 /public
+/public/static/*
