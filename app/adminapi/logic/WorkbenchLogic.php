@@ -18,7 +18,9 @@ namespace app\adminapi\logic;
 use app\common\logic\BaseLogic;
 use app\common\service\ConfigService;
 use app\common\service\FileService;
-
+use app\common\model\OceanCard;
+use app\common\model\OceanCardOrder;
+use app\common\model\user\User;
 
 /**
  * 工作台
@@ -70,36 +72,36 @@ class WorkbenchLogic extends BaseLogic
                 'image' => FileService::getFileUrl(config('project.default_image.menu_role')),
                 'url' => '/permission/role'
             ],
-            [
-                'name' => '部门管理',
-                'image' => FileService::getFileUrl(config('project.default_image.menu_dept')),
-                'url' => '/organization/department'
-            ],
-            [
-                'name' => '字典管理',
-                'image' => FileService::getFileUrl(config('project.default_image.menu_dict')),
-                'url' => '/dev_tools/dict'
-            ],
-            [
-                'name' => '代码生成器',
-                'image' => FileService::getFileUrl(config('project.default_image.menu_generator')),
-                'url' => '/dev_tools/code'
-            ],
-            [
-                'name' => '素材中心',
-                'image' => FileService::getFileUrl(config('project.default_image.menu_file')),
-                'url' => '/material/index'
-            ],
+            // [
+            //     'name' => '部门管理',
+            //     'image' => FileService::getFileUrl(config('project.default_image.menu_dept')),
+            //     'url' => '/organization/department'
+            // ],
+            // [
+            //     'name' => '字典管理',
+            //     'image' => FileService::getFileUrl(config('project.default_image.menu_dict')),
+            //     'url' => '/dev_tools/dict'
+            // ],
+            // [
+            //     'name' => '代码生成器',
+            //     'image' => FileService::getFileUrl(config('project.default_image.menu_generator')),
+            //     'url' => '/dev_tools/code'
+            // ],
+            // [
+            //     'name' => '素材中心',
+            //     'image' => FileService::getFileUrl(config('project.default_image.menu_file')),
+            //     'url' => '/material/index'
+            // ],
             [
                 'name' => '菜单权限',
                 'image' => FileService::getFileUrl(config('project.default_image.menu_auth')),
                 'url' => '/permission/menu'
             ],
-            [
-                'name' => '网站信息',
-                'image' => FileService::getFileUrl(config('project.default_image.menu_web')),
-                'url' => '/setting/website/information'
-            ],
+            // [
+            //     'name' => '网站信息',
+            //     'image' => FileService::getFileUrl(config('project.default_image.menu_web')),
+            //     'url' => '/setting/website/information'
+            // ],
         ];
     }
 
@@ -130,33 +132,39 @@ class WorkbenchLogic extends BaseLogic
      * @return int[]
      * @author 段誉
      * @date 2021/12/29 16:15
+     * 用户总数、销售总额、订单总数、销售卡总数
      */
     public static function today(): array
     {
-        return [
-            'time' => date('Y-m-d H:i:s'),
-            // 今日销售额
-            'today_sales' => 100,
-            // 总销售额
-            'total_sales' => 1000,
-
-            // 今日访问量
-            'today_visitor' => 10,
-            // 总访问量
-            'total_visitor' => 100,
-
-            // 今日新增用户量
-            'today_new_user' => 30,
-            // 总用户量
-            'total_new_user' => 3000,
-
-            // 订单量 (笔)
-            'order_num' => 12,
-            // 总订单量
-            'order_sum' => 255
-        ];
+        $res = [];
+        $startTime = strtotime('today 00:00:00');
+        $endTime = strtotime('today 23:59:59');
+        // $date = date('Y-m-d', $startTime);
+        
+        $res['time'] = date('Y-m-d H:i:s');
+        // 总用户数
+        $res['total_new_user'] = User::count();
+        // 今日新增用户数
+        $res['today_new_user'] = User::whereBetween('create_time', [$startTime, $endTime])->count();
+        // // 首充人数
+        // $firstRechargeUsers = OceanCardOrder::where('state', 1)->field('user_id')->distinct(true)->count();
+        // // 复充人数
+        // $repeatRechargeUsers = OceanCardOrder::field('user_id, COUNT(*) as order_count')->group('user_id')->having('order_count >= 2')->count();
+        
+        // 订单总额
+        $res['order_total'] = OceanCardOrder::where('state', 1)->sum('price');
+        //今日订单总额
+        $res['today_order_total'] = OceanCardOrder::whereBetween('create_time', [$startTime, $endTime])->where('state', 1)->sum('price');
+        // 订单总数
+        $res['order_sum'] = OceanCardOrder::where('state', 1)->count();
+        //今日订单总数
+        $res['order_num'] = OceanCardOrder::whereBetween('create_time', [$startTime, $endTime])->where('state', 1)->count();
+        // 销售卡总数
+        $res['total_sales'] = OceanCard::where('state', 1)->count();
+        $res['today_sales'] = OceanCard::whereBetween('create_time', [$startTime, $endTime])->where('state', 1)->count();
+        return $res;
     }
-
+    
 
     /**
      * @notes 访问数
@@ -170,14 +178,18 @@ class WorkbenchLogic extends BaseLogic
         $date = [];
         for ($i = 0; $i < 15; $i++) {
             $where_start = strtotime("- " . $i . "day");
-            $date[] = date('Y/m/d', $where_start);
-            $num[$i] = rand(0, 100);
+            $date[] = $day = date('Y/m/d', $where_start);
+            
+            $startTime = strtotime($day.' 00:00:00');
+            $endTime = strtotime($day.' 23:59:59');
+            
+            $num[$i] = User::whereBetween('create_time', [$startTime, $endTime])->count();;
         }
 
         return [
             'date' => $date,
             'list' => [
-                ['name' => '访客数', 'data' => $num]
+                ['name' => '注册数', 'data' => $num]
             ]
         ];
     }
