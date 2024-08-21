@@ -134,8 +134,13 @@ class UserLogic extends BaseLogic
         $user->sex = $user->getData('sex');
         $userInfo = $user->toArray();
         // 上级用户
+        $subordinateCount = 0;
+        if($user_ids != ''){
+            // echo $user_ids;die;
+            $subordinateCount = count(explode(',',$user_ids));
+        }
         $userInfo['parent_account'] = $icodeUser['account'] ?? '';
-        $userInfo['subordinate_count'] = count(explode(',',$user_ids));//下级总人数
+        $userInfo['subordinate_count'] = $subordinateCount;//下级总人数
         $userInfo['has_share_user_count'] = $shareUserCount;//有分享记录的账号总数
         $userInfo['user_discount'] = $discount;//用户等级
         $userInfo['order_count'] = $orderCount;//下单总数

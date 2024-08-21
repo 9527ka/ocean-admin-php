@@ -7,7 +7,7 @@ use app\common\lists\ListsSearchInterface;
 use app\common\model\OceanCard;
 use app\common\model\article\Article;
 use app\common\model\article\ArticleCollect;
-
+use app\common\model\UserPosters;
 
 /**
  * 礼品卡列表
@@ -77,7 +77,14 @@ class OceanCardLists extends BaseApiDataLists implements ListsSearchInterface
             ->orderRaw($orderRaw)
             ->limit($this->limitOffset, $this->limitLength)
             ->select()->toArray();
-
+        //当日是否有分享审核成功
+        $has_share = UserPosters::where(['user_id'=>$this->userId,'audit_status'=>1,'date'=>date('Y-m-d')])->value('id');
+        if(!empty($result)){
+            foreach ($result as &$v){
+                $v['buy'] = 'on';
+                if(empty($has_share)) $v['buy'] = 'off';
+            }
+        }
         return $result;
     }
 

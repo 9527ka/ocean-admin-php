@@ -38,7 +38,7 @@ class OceanCardOrderLists extends BaseAdminDataLists implements ListsSearchInter
     public function setSearch(): array
     {
         return [
-            '=' => ['card_name', 'price', 'state', 'serial_number', 'cdk', 'username', 'pay_method'],
+            '=' => ['card_name', 'price', 'state', 'serial_number', 'cdk', 'account', 'pay_method'],
             'between_time' => ['create_time'],
         ];
     }
@@ -56,7 +56,7 @@ class OceanCardOrderLists extends BaseAdminDataLists implements ListsSearchInter
     public function lists(): array
     {
         $list = OceanCardOrder::where($this->searchWhere)
-            ->field(['id', 'card_id', 'card_name', 'price', 'state', 'serial_number', 'cdk', 'username', 'user_id', 'pay_method', 'pay_img', 'create_time'])
+            ->field(['id', 'card_id', 'card_name', 'price', 'state', 'serial_number', 'cdk', 'account', 'user_id', 'pay_method', 'pay_img', 'create_time'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()

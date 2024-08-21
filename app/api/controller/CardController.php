@@ -19,17 +19,13 @@ use think\facade\{Db, Lang};
  */
 class CardController extends BaseApiController
 {
-    public array $notNeedLogin = ['check','list'];
+    public array $notNeedLogin = ['check'];
     
-    //是否提交分享
-    public function checks(){
-        
-    }
     //下单购买
     public function order(){
-        $price = request()->get('price');//面值
-        $pay_img = request()->get('pay_img');//支付凭证
-        $pay_hash = request()->get('pay_hash');//交易哈希流水号
+        $price = request()->post('price');//面值
+        $pay_img = request()->post('pay_img');//支付凭证
+        $pay_hash = request()->post('pay_hash');//交易哈希流水号
         
         if(empty($price)){
             return $this->fail(Lang::get('product_cannot_empty'));//商品不能为空
@@ -76,7 +72,6 @@ class CardController extends BaseApiController
 
             // 精密计算 - 防止失精导致多位小数点
             $p['price'] = bcmul($p['price'], $discount, 2);
-            
             //创建订单
             $order = new OceanCardOrder();
             
@@ -86,7 +81,7 @@ class CardController extends BaseApiController
             $order->card_img = $p['image'];
             $order->serial_number = $p['serial_number'];
             $order->cdk = $p['cdk'];
-            $order->username = $this->userInfo['nickname'];
+            $order->account = $this->userInfo['account'];
             $order->user_id = $this->userId;
             $order->pay_hash = $pay_hash;
             $order->pay_img = $pay_img;
