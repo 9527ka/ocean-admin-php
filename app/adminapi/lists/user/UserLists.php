@@ -70,12 +70,17 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
                 // 'u3.id as child_2_id',
                 // 'u3.account as child_2_name',
             ])
+            ->group('u2.id')
             ->limit($this->limitOffset, $this->limitLength)
             ->order('u1.id desc')
             ->select()->toArray();
             foreach ($lists as &$item) {
-                $item['child_1_create_time'] = date('Y-m-d H:i:s',$item['child_1_create_time']);
+                if($item['child_1_create_time']){
+                    $item['child_1_create_time'] = date('Y-m-d H:i:s',$item['child_1_create_time']);
+                }
             }
+            // echo User::getlastsql();die;
+            // echo json_encode($lists);die;
             return $lists;
         }
         
@@ -98,16 +103,16 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
             
             array_push($map,$v);
         }
-        $field = "id,sn,nickname,email,real_name,points,icode,sex,avatar,account,mobile,channel,create_time";
+        $field = "id,sn,nickname,email,real_name,points,icode,sex,avatar,account,mobile,channel,create_time,parent_id";
         $lists = User::where($map)
             ->limit($this->limitOffset, $this->limitLength)
             ->field($field)
             ->order('id desc')
             ->select()->toArray();
 
-        // foreach ($lists as &$item) {
-        //     $item['channel'] = UserTerminalEnum::getTermInalDesc($item['channel']);
-        // }
+        foreach ($lists as &$item) {
+            $item['parent_account'] = User::where('id',$item['parent_id'])->value('account');
+        }
 
         return $lists;
     }

@@ -44,7 +44,26 @@ class LoginLogic extends BaseLogic
     {
         return sprintf(self::EMAIL_KEY, $email);
     }
-
+    
+    //发送6位数密码到邮箱
+    public static function sendPwd(array $p): bool
+    {
+        try {
+            $pwd = rand(100000,999999);
+            // 发送密码
+            $emailLogic = new MailLogic();
+            $sta = $emailLogic->sendPwdEmail($p['email'], $pwd);
+            //修改密码
+            $pwd = self::getPwdEncryptString($pwd);
+            User::where(['email' => $p['email'],'account' => $p['account']])->save(['password' => $pwd]);
+            if($sta){
+                return true;
+            }
+        } catch (\Exception $e) {
+            self::setError($e->getMessage());
+            return false;
+        }
+    }
     public static function sendCode(string $email): bool
     {
         $sessionKey = self::getEmailSessionKey($email);
@@ -114,11 +133,22 @@ class LoginLogic extends BaseLogic
             // if ($codeInfo['code'] != $params['code']) {
             //     throw new \Exception(Lang::get('code_invalidate'));
             // }
+            //账号是否存在
+            $has_account = User::where('account',$params['account'])->value('id');
+            if($has_account){
+                throw new \Exception(Lang::get('account_already_exist'));
+            }
+            //手机号是否存在
+            $has_mobile = User::where('mobile',$params['phone_number'])->value('id');
+            if($has_mobile){
+                throw new \Exception(Lang::get('mobile_already_exist'));
+            }
             //检查邀请码是否存在
             $parent_id = User::where('icode',$params['invitation_code'])->value('id');
             if(!$parent_id){
                 throw new \Exception(Lang::get('invitation_code_error'));
             }
+            $parent_2_id = User::where('id',$parent_id)->value('parent_id');
             $icode = self::getIcode();
 
             $userSn = User::createUserSn();
@@ -136,7 +166,8 @@ class LoginLogic extends BaseLogic
                 'invitation_code' => $params['invitation_code'] ?? '',
                 'mobile' => $params['phone_number'],
                 'icode' => $icode,
-                'parent_id' => $parent_id ?? 0
+                'parent_id' => $parent_id ?? 0,
+                'parent_2_id' => $parent_2_id ?? 0
             ]);
 
             return true;

@@ -53,7 +53,7 @@ return [
     'email_title' => '邮箱验证码',
     'email_body' => '您的验证码是: <b>%s</b>, 有效时间为: <b>%s</b>分钟',
     // 海报
-    'has_shared' => '您今天已经分享过了，请明天再来'
-    
+    'has_shared' => '您今天已经分享过了，请明天再来',
+    'email_already_exists' => '邮箱已存在'
 
 ];

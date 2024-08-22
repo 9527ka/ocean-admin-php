@@ -76,6 +76,7 @@ class UserPosterLists extends BaseApiDataLists implements ListsSearchInterface
 
         $field = '*';
         $result = UserPoster::field($field)
+            ->where('user_id',$this->userId)
             ->where($this->queryWhere())
             ->where($this->searchWhere)
             ->orderRaw($orderRaw)

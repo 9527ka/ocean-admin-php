@@ -113,13 +113,20 @@ class UserLogic extends BaseLogic
                 'u1.id as user_id',
                 'GROUP_CONCAT(DISTINCT u2.id ORDER BY u2.id ASC) as first_level_ids',
                 'GROUP_CONCAT(DISTINCT u3.id ORDER BY u3.id ASC) as second_level_ids',
-                'GROUP_CONCAT(DISTINCT CONCAT_WS(",", u2.id, u3.id)) as all_child_ids'
+                // 'GROUP_CONCAT(DISTINCT CONCAT_WS(",", u2.id, u3.id)) as all_child_ids'
             ])
             ->group('u1.id')
             ->find();
         $user_ids = '';
         if(!empty($users)){
-            $user_ids = $users['all_child_ids'];
+            if($users['first_level_ids'] != '' && $users['second_level_ids'] != ''){
+                $user_ids = $users['first_level_ids'].','.$users['second_level_ids'];
+            }else if($users['first_level_ids'] != '' && $users['second_level_ids'] == ''){
+                $user_ids = $users['first_level_ids'];
+            }else if($users['first_level_ids'] == '' && $users['second_level_ids'] != ''){
+                $user_ids = $users['second_level_ids'];
+            }
+            // echo json_encode($users);die;
         }
         // 有分享记录的账号总数
         $shareUserCount = UserPoster::whereIn('user_id', $user_ids)->group('user_id')->count();
@@ -139,6 +146,7 @@ class UserLogic extends BaseLogic
             // echo $user_ids;die;
             $subordinateCount = count(explode(',',$user_ids));
         }
+        
         $userInfo['parent_account'] = $icodeUser['account'] ?? '';
         $userInfo['subordinate_count'] = $subordinateCount;//下级总人数
         $userInfo['has_share_user_count'] = $shareUserCount;//有分享记录的账号总数

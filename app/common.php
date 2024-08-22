@@ -2,7 +2,47 @@
 // 应用公共文件
 use app\common\service\FileService;
 use think\helper\Str;
-
+use PHPMailer\PHPMailer\PHPMailer;
+/**
+ * todo 谷歌账号 系统发邮件
+ * @param array $tomail 接收邮件者邮箱
+ * @param string $subject 邮件主题
+ * @param string $body 邮件内容
+ * @param string $attachment 附件列表
+ * @return boolean
+ */
+function send_gmail($toMail, $subject = '', $body = '', $attachment = null)
+{
+    $mail = new PHPMailer();
+     //实例化PHPMailer对象
+    $mail->IsSMTP();
+    $mail->CharSet = "UTF-8";
+    $mail->Encoding = 'base64';
+    $mail->SMTPDebug = 0; //是否调试
+    $mail->SMTPAuth = true;
+    $mail->Host = 'ssl://smtp.gmail.com:465'; //host
+    $mail->Port = 25; //端口
+    
+    $mail->Username = "foundationfou@gmail.com"; //发件人邮箱
+    $mail->Password = "vtwerpvmjlbqngxc"; //上面获得的谷歌应用程序码（16位字符串，无空格）
+    $mail->SetFrom("foundationfou@gmail.com","Content System"); //发件人邮箱和名称
+    
+    $mail->Subject = $subject; //标题
+    $mail->Body = $body; //内容
+    $mail->IsHTML(true); //是否启用html
+    // $mail->IsHTML = true;
+    // foreach ($toMail as $key => $val){
+    //     $mail->AddAddress($val, $key);
+    // }
+    $mail->AddAddress($toMail, 0);
+    $sta = $mail->Send();
+    if($sta){
+        return true;
+    }
+    return false;
+    // return $mail->Send() ? true : $mail->ErrorInfo;
+ 
+}
 //剔除空数组
 function filtered_array($array){
     $arr = [];

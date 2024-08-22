@@ -11,6 +11,7 @@ use app\api\validate\{LoginAccountValidate,
 use app\api\logic\LoginLogic;
 use think\facade\Lang;
 use think\facade\Session;
+use app\common\model\user\User;
 
 /**
  * 登录注册
@@ -20,8 +21,7 @@ use think\facade\Session;
 class LoginController extends BaseApiController
 {
 
-    public array $notNeedLogin = ['register', 'sendCode', 'account', 'logout', 'codeUrl', 'oaLogin',  'mnpLogin', 'getScanCode', 'scanLogin'];
-
+    public array $notNeedLogin = ['retrieve_pwd','register', 'sendCode', 'account', 'logout', 'codeUrl', 'oaLogin',  'mnpLogin', 'getScanCode', 'scanLogin'];
 
     /**
      * @notes 注册账号
@@ -55,10 +55,40 @@ class LoginController extends BaseApiController
         }
         return $this->data($result);
     }
-
+    
+    //找回密码
+    public function retrieve_pwd(Request $request) {
+        $p = $this->request->post();
+        if(empty($p['email'])){
+            return $this->fail(Lang::get('email_is_empty'));
+        }
+        if(empty($p['account'])){
+            return $this->fail(Lang::get('username_is_empty'));
+        }
+        //邮箱是否存在
+        $has_email = User::where(['email' => $p['email']])->value('id');
+        if(!$has_email){
+            return $this->fail(Lang::get('email_not_exist'));
+        }
+        $has_username = User::where(['email' => $p['email'],'account' => $p['account']])->value('id');
+        if(!$has_username){
+            return $this->fail(Lang::get('username_not_exist'));
+        }
+        $ok = LoginLogic::sendPwd($p);
+        if ($ok) {
+            return $this->success(Lang::get('update_pwd_success'));
+        } else {
+            return $this->fail(Lang::get('update_pwd_failed'));
+        }
+    }
+    
     // 发送验证码
     public function sendCode(Request $request) {
         $params = (new SendCodeValidate())->post()->goCheck();
+        $has_email = User::where('email',$params['email'])->value('id');
+        if($has_email){
+            return $this->fail(Lang::get('email_already_exist'));
+        }
         $ok = LoginLogic::sendCode($params['email']);
         if ($ok) {
             return $this->success(Lang::get('send_code_success'));

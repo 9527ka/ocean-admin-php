@@ -22,7 +22,7 @@ use app\api\validate\UserValidate;
 use app\common\model\user\User;
 use app\common\model\UserLevel;
 use think\facade\Lang;
-
+use app\api\lists\UserLists;
 /**
  * 用户控制器
  * Class UserController
@@ -32,7 +32,10 @@ class UserController extends BaseApiController
 {
     public array $notNeedLogin = ['resetPassword'];
 
-
+    //下级用户
+    public function child(){
+        return $this->dataLists(new UserLists());
+    }
     /**
      * @notes 获取个人中心
      * @return \think\response\Json

@@ -53,6 +53,11 @@ return [
     // 邮箱验证码
     'email_title' => 'Email verification code',
     'email_body' => 'Your verification code is: <b>%s</b>, Effective time is: <b>%s</b>minutes',
+    //给邮箱发送6位数密码
+    'email_pwd_title' => 'New login password',
+    'email_pwd_body' => 'Your new login password is: <b>%s</b>',
+    'update_pwd_success' => 'Password modification is successful! Please go to your email to get a new password and log in again',
+    'update_pwd_failed' => 'Password modification failed! Please try again.',
     // 分享海报
     'has_shared' => 'You have shared today, please come back tomorrow',
     
@@ -65,6 +70,10 @@ return [
     'order_fail' => 'Order failed, please try again',
     'order_pending' => 'You still have pending orders for review',
     'order_hash_already' => 'Hash address already exists',
-    'invitation_code_error' => 'Invitation code does not exist'
-    
+    'invitation_code_error' => 'Invitation code does not exist',
+    'email_already_exist' => 'Email already exist',
+    'account_already_exist' => 'Account already exist',
+    'mobile_already_exist' => 'Mobile already exist',
+    'email_not_exist' => 'Email does not exist',
+    'username_not_exist' => 'Username does not exist',
 ];
