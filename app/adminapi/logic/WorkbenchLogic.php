@@ -120,8 +120,8 @@ class WorkbenchLogic extends BaseLogic
             'name' => ConfigService::get('website', 'name'),
             'based' => 'vue3.x、ElementUI、MySQL',
             'channel' => [
-                'website' => 'https://www.likeadmin.cn',
-                'gitee' => 'https://gitee.com/likeadmin/likeadmin_php',
+                'website' => 'https://www.sxf.cn',
+                'gitee' => 'https://gitee.com/sxf/sxf_php',
             ]
         ];
     }
@@ -147,9 +147,9 @@ class WorkbenchLogic extends BaseLogic
         // 今日新增用户数
         $res['today_new_user'] = User::whereBetween('create_time', [$startTime, $endTime])->count();
         // // 首充人数
-        // $firstRechargeUsers = OceanCardOrder::where('state', 1)->field('user_id')->distinct(true)->count();
-        // // 复充人数
-        // $repeatRechargeUsers = OceanCardOrder::field('user_id, COUNT(*) as order_count')->group('user_id')->having('order_count >= 2')->count();
+        $res['first_recharge_count'] = OceanCardOrder::where('state', 1)->field('user_id')->distinct(true)->count();
+        // 复充人数
+        $res['repeat_recharge_count'] = OceanCardOrder::field('user_id, COUNT(*) as order_count')->group('user_id')->having('order_count >= 2')->count();
         
         // 订单总额
         $res['order_total'] = OceanCardOrder::where('state', 1)->sum('price');

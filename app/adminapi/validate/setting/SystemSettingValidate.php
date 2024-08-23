@@ -32,11 +32,11 @@ class SystemSettingValidate extends BaseValidate
       */
     protected $rule = [
         'id' => 'require',
-        'version_no' => 'require',
-        'multi_language' => 'require',
-        'language' => 'require',
+        // 'version_no' => 'require',
+        // 'multi_language' => 'require',
+        // 'language' => 'require',
         'key' => 'require',
-        'status' => 'require',
+        // 'status' => 'require',
     ];
 
 

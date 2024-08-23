@@ -56,29 +56,44 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
     public function lists(): array
     {
         if(!empty($_GET['user_id'])){
-            $lists = User::alias('u1')
-            ->where('u1.parent_id',$_GET['user_id'])
-            ->leftJoin('la_user u2', 'u2.parent_id = u1.id')
-            ->leftJoin('la_user u3', 'u3.parent_id = u2.id')
-            ->field([
-                'u1.id as user_id',
-                'u1.account as user_name',
-                'u1.create_time',
-                'u2.id as child_1_id',
-                'u2.account as child_1_name',
-                'u2.create_time as child_1_create_time',
-                // 'u3.id as child_2_id',
-                // 'u3.account as child_2_name',
-            ])
-            ->group('u2.id')
-            ->limit($this->limitOffset, $this->limitLength)
-            ->order('u1.id desc')
-            ->select()->toArray();
-            foreach ($lists as &$item) {
-                if($item['child_1_create_time']){
-                    $item['child_1_create_time'] = date('Y-m-d H:i:s',$item['child_1_create_time']);
+            $uid = $_GET['user_id'];
+            $orderRaw = 'create_time desc';
+            $field = 'account,parent_id,create_time';
+            $lists = User::field($field)
+                ->where('parent_id', $uid)
+                ->whereOr('parent_2_id', $uid)
+                ->orderRaw($orderRaw)
+                ->limit($this->limitOffset, $this->limitLength)
+                ->select()->toArray();
+            // echo User::getlastsql();die;
+            if(!empty($lists)){
+                foreach ($lists as $k => &$v){
+                    $v['level'] = $v['parent_id'] == $uid ? '一级':'二级';
                 }
             }
+            // $lists = User::alias('u1')
+            // ->where('u1.parent_id',$_GET['user_id'])
+            // ->leftJoin('la_user u2', 'u2.parent_id = u1.id')
+            // ->leftJoin('la_user u3', 'u3.parent_id = u2.id')
+            // ->field([
+            //     'u1.id as user_id',
+            //     'u1.account as user_name',
+            //     'u1.create_time',
+            //     'u2.id as child_1_id',
+            //     'u2.account as child_1_name',
+            //     'u2.create_time as child_1_create_time',
+            //     // 'u3.id as child_2_id',
+            //     // 'u3.account as child_2_name',
+            // ])
+            // ->group('u2.id')
+            // ->limit($this->limitOffset, $this->limitLength)
+            // ->order('u1.id desc')
+            // ->select()->toArray();
+            // foreach ($lists as &$item) {
+            //     if($item['child_1_create_time']){
+            //         $item['child_1_create_time'] = date('Y-m-d H:i:s',$item['child_1_create_time']);
+            //     }
+            // }
             // echo User::getlastsql();die;
             // echo json_encode($lists);die;
             return $lists;
@@ -126,8 +141,11 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
      */
     public function count(): int
     {
+        if(!empty($_GET['user_id'])){
+            $uid = $_GET['user_id'];
+            return User::where('parent_id', $uid)->whereOr('parent_2_id', $uid)->count();
+        }
         return User::where($this->searchWhere)->count();
-        return User::withSearch($this->setSearch(), $this->params)->count();
     }
 
 

@@ -41,6 +41,7 @@ class SystemSettingLogic extends BaseLogic
         Db::startTrans();
         try {
             SystemSetting::create([
+                'remark' => $params['remark'],
                 'version_no' => $params['version_no'],
                 'multi_language' => $params['multi_language'],
                 'language' => $params['language'],
@@ -76,7 +77,8 @@ class SystemSettingLogic extends BaseLogic
                 'language' => $params['language'],
                 'key' => $params['key'],
                 'value' => $params['value'],
-                'status' => $params['status']
+                'status' => $params['status'],
+                'remark' => $params['remark'],
             ]);
 
             Db::commit();

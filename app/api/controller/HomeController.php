@@ -73,8 +73,8 @@ class HomeController extends BaseApiController
         return $this->data($result);
     }
     public function config(){
-        $result = SystemSetting::where('status',1)->field('key,value')->select()->toArray();
-        return $this->data($result);
+        $key = $this->request->get('key/s');
+        $res = SystemSetting::where('status',1)->where('key',$key)->value('value');
+        return $this->success('', ['content'=>$res]);
     }
-
 }
