@@ -55,7 +55,7 @@ class SystemSettingLists extends BaseAdminDataLists implements ListsSearchInterf
     public function lists(): array
     {
         return SystemSetting::where($this->searchWhere)
-            ->field(['id', 'version_no', 'multi_language', 'language', 'key', 'value', 'status'])
+            ->field(['id', 'version_no', 'multi_language', 'language', 'key','remark','value', 'status','update_time'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()

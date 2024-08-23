@@ -8,6 +8,7 @@ use app\common\model\OceanCard;
 use app\common\model\article\Article;
 use app\common\model\article\ArticleCollect;
 use app\common\model\UserPosters;
+use app\common\model\OceanCardOrder;
 
 /**
  * 礼品卡列表
@@ -58,7 +59,7 @@ class OceanCardLists extends BaseApiDataLists implements ListsSearchInterface
     public function lists(): array
     {
 //        $orderRaw = 'sort desc, id desc';
-        $orderRaw = 'create_time desc';
+        $orderRaw = 'price ASC';
         $sortType = $this->params['sort'] ?? 'default';
         // 最新排序
 //        if ($sortType == 'new') {
@@ -79,10 +80,14 @@ class OceanCardLists extends BaseApiDataLists implements ListsSearchInterface
             ->select()->toArray();
         //当日是否有分享审核成功
         $has_share = UserPosters::where(['user_id'=>$this->userId,'audit_status'=>1,'date'=>date('Y-m-d')])->value('id');
+        //当日是否已经购买过
+        $has_order = OceanCardOrder::where(['user_id'=>$this->userId,'state'=>1,['create_time','>=',strtotime(date('Y-m-d'))]])->value('id');
+        // echo OceanCardOrder::getlastsql();die;
         if(!empty($result)){
             foreach ($result as &$v){
                 $v['buy'] = 'on';
                 if(empty($has_share)) $v['buy'] = 'off';
+                if(!empty($has_order)) $v['buy'] = 'buyed';
             }
         }
         return $result;

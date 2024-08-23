@@ -80,7 +80,6 @@ class SystemSettingLogic extends BaseLogic
                 'status' => $params['status'],
                 'remark' => $params['remark'],
             ]);
-
             Db::commit();
             return true;
         } catch (\Exception $e) {

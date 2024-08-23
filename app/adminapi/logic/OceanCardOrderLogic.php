@@ -45,9 +45,9 @@ class OceanCardOrderLogic extends BaseLogic
 
             // 审核通过 - 给下单用户的上级新增积分 [目前统一加1个积分] @todo 后续做成配置项
             if ($params['state'] == 1) {
-                $userInfo = User::where('id', $orderInfo->user_id)->findOrEmpty();
-                if ($parentUserId = $userInfo?->parentUser?->id) {
-                    User::where('id', $parentUserId)->inc('points', 1)->update();
+                $parent_id = User::where('id', $orderInfo->user_id)->value('parent_id');
+                if ($parent_id) {
+                    User::where('id', $parent_id)->inc('points', 1)->update();
                 }
             }
 
