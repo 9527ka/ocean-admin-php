@@ -20,6 +20,7 @@ use app\api\validate\PasswordValidate;
 use app\api\validate\SetUserInfoValidate;
 use app\api\validate\UserValidate;
 use app\common\model\user\User;
+use app\common\model\UserPosters;
 use app\common\model\UserLevel;
 use think\facade\Lang;
 use app\api\lists\UserLists;
@@ -60,11 +61,19 @@ class UserController extends BaseApiController
     public function info()
     {
         $result = UserLogic::info($this->userId);
-        $result['invite_partners'] = User::where('invitation_code', $result['icode'])->count();
-        $result['share_daily'] = 0;
+        
+        //子用户数
+        $result['invite_partners'] = User::where('parent_id', $this->userId)->whereOr('parent_2_id', $this->userId)->count();
+        //子用户分享数
+        $result['share_daily'] = UserPosters::alias('up')
+            ->join('user u', 'u.id = up.user_id')
+            ->where('up.audit_status', 1)
+            ->where('u.parent_id|u.parent_2_id', $this->userId)
+            ->count();
+        $level = UserLevelLogic::getUserLevel($result['points']);
         // 用户分值对应的优惠比例
-        $result['discount'] = UserLevelLogic::getUserLevel($result['points'])['discount'] ?? 0;
-        $result['level_name'] = UserLevelLogic::getUserLevel($result['points'])['name'] ?? '';
+        $result['discount'] = $level ? $level['discount']*0.1 : 0;
+        $result['level_name'] = $level ? $level['name'] : 0;
 
         // 版本信息
         $result['version'] = 'V1.8.3';
@@ -75,11 +84,6 @@ class UserController extends BaseApiController
     public function levels()
     {
         return $this->data(UserLevel::select()->toArray());
-    }
-
-    public function card()
-    {
-
     }
 
     /**

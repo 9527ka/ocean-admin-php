@@ -126,13 +126,13 @@ class LoginLogic extends BaseLogic
             if (empty($cacheData)) {
                 throw new \Exception(Lang::get('code_empty'));
             }
-            // $codeInfo = json_decode($cacheData, true);
-            // if (time() - $codeInfo['time'] >= MailLogic::EMAIL_CODE_EXPIRE * 60) {
-            //     throw new \Exception(Lang::get('code_expired'));
-            // }
-            // if ($codeInfo['code'] != $params['code']) {
-            //     throw new \Exception(Lang::get('code_invalidate'));
-            // }
+            $codeInfo = json_decode($cacheData, true);
+            if (time() - $codeInfo['time'] >= MailLogic::EMAIL_CODE_EXPIRE * 60) {
+                throw new \Exception(Lang::get('code_expired'));
+            }
+            if ($codeInfo['code'] != $params['code']) {
+                throw new \Exception(Lang::get('code_invalidate'));
+            }
             //账号是否存在
             $has_account = User::where('account',$params['account'])->value('id');
             if($has_account){
@@ -213,6 +213,7 @@ class LoginLogic extends BaseLogic
             //更新登录信息
             $user->login_time = time();
             $user->login_ip = request()->ip();
+            $user->login_device = getDevice();
             $user->save();
 
             //设置token

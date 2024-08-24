@@ -64,11 +64,44 @@ class UserController extends BaseAdminController
      * @author 段誉
      * @date 2022/9/22 16:34
      */
+    // public function edit()
+    // {
+    //     $params = (new UserValidate())->post()->goCheck('edit');
+    //     UserLogic::setUserInfo($params);
+    //     return $this->success('操作成功', [], 1, 1);
+    // }
+    
+    /**
+     * @notes 添加
+     * @return \think\response\Json
+     * @author likeadmin
+     * @date 2024/08/24 22:39
+     */
+    public function add()
+    {
+        $params = (new UserValidate())->post()->goCheck('add');
+        $result = UserLogic::add($params);
+        if (true === $result) {
+            return $this->success('添加成功', [], 1, 1);
+        }
+        return $this->fail(UserLogic::getError());
+    }
+
+
+    /**
+     * @notes 编辑
+     * @return \think\response\Json
+     * @author likeadmin
+     * @date 2024/08/24 22:39
+     */
     public function edit()
     {
-        $params = (new UserValidate())->post()->goCheck('setInfo');
-        UserLogic::setUserInfo($params);
-        return $this->success('操作成功', [], 1, 1);
+        $params = (new UserValidate())->post()->goCheck('edit');
+        $result = UserLogic::edit($params);
+        if (true === $result) {
+            return $this->success('编辑成功', [], 1, 1);
+        }
+        return $this->fail(UserLogic::getError());
     }
 
 
@@ -86,6 +119,18 @@ class UserController extends BaseAdminController
             return $this->success('操作成功', [], 1, 1);
         }
         return $this->fail($res);
+    }
+    /**
+     * @notes 删除
+     * @return \think\response\Json
+     * @author likeadmin
+     * @date 2024/08/24 22:39
+     */
+    public function delete()
+    {
+        $params = (new UserValidate())->post()->goCheck('delete');
+        UserLogic::delete($params);
+        return $this->success('删除成功', [], 1, 1);
     }
 
 }

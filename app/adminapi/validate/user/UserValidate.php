@@ -29,6 +29,12 @@ class UserValidate extends BaseValidate
         'id' => 'require|checkUser',
         'field' => 'require|checkField',
         'value' => 'require',
+        'real_name' => 'require',
+        'account' => 'require',
+        'mobile' => 'require',
+        'email' => 'require',
+        'points' => 'require',
+        // 'invitation_code'=> ''
     ];
 
     protected $message = [
@@ -37,6 +43,22 @@ class UserValidate extends BaseValidate
         'value.require' => '请输入内容',
     ];
 
+
+
+    /**
+     * 参数描述
+     * @var string[]
+     */
+    protected $field = [
+        'id' => 'id',
+        'avatar' => '头像',
+        'real_name' => '全名',
+        'account' => '用户名',
+        'mobile' => '手机号',
+        'email' => '邮箱',
+        'points' => '积分',
+        'invitation_code' => '邀请码'
+    ];
 
     /**
      * @notes 详情场景
@@ -122,6 +144,42 @@ class UserValidate extends BaseValidate
                 break;
         }
         return true;
+    }
+
+
+    /**
+     * @notes 添加场景
+     * @return UserValidate
+     * @author likeadmin
+     * @date 2024/08/24 22:39
+     */
+    public function sceneAdd()
+    {
+        return $this->only(['real_name','account','password','mobile','email','points','invitation_code']);
+    }
+
+
+    /**
+     * @notes 编辑场景
+     * @return UserValidate
+     * @author likeadmin
+     * @date 2024/08/24 22:39
+     */
+    public function sceneEdit()
+    {
+        return $this->only(['id','real_name','account','mobile','email','points']);
+    }
+
+
+    /**
+     * @notes 删除场景
+     * @return UserValidate
+     * @author likeadmin
+     * @date 2024/08/24 22:39
+     */
+    public function sceneDelete()
+    {
+        return $this->only(['id']);
     }
 
 

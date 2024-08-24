@@ -28,7 +28,8 @@ class UserLevelLogic extends BaseLogic
 
 
     public static function getUserLevel(int $points, array $levels = []) {
-
+        return UserLevel::where('points','<=',$points)->order('points DESC')->field('discount,name')->find();
+        
         if (empty($levels)) {
             $levels = UserLevel::select()->toArray();
         }

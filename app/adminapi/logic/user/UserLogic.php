@@ -22,6 +22,14 @@ use app\common\model\user\User;
 use app\common\model\UserPoster;
 use app\common\model\OceanCardOrder;
 use think\facade\Db;
+use think\facade\Config;
+
+
+use think\Exception;
+use app\common\service\{
+    ConfigService,
+    FileService
+};
 
 /**
  * 用户逻辑层
@@ -219,6 +227,136 @@ class UserLogic extends BaseLogic
             Db::rollback();
             return $e->getMessage();
         }
+    }
+    
+    
+    /**
+     * @notes 添加
+     * @param array $params
+     * @return bool
+     * @author likeadmin
+     * @date 2024/08/24 22:39
+     */
+    public static function add(array $params): bool
+    {
+        Db::startTrans();
+        try {
+            if(!$params['password']){
+                throw new \Exception('请填写密码');
+            }
+            //邮箱是否存在
+            $has_email = User::where(['email' => $params['email']])->value('id');
+            if($has_email){
+                throw new \Exception('邮箱已存在');
+            }
+            //账号是否存在
+            $has_account = User::where('account',$params['account'])->value('id');
+            if($has_account){
+                throw new \Exception('用户名已存在');
+            }
+            //手机号是否存在
+            $has_mobile = User::where('mobile',$params['mobile'])->value('id');
+            if($has_mobile){
+                throw new \Exception('手机号已存在');
+            }
+            //检查邀请码是否存在
+            $parent_id = User::where('icode',$params['invitation_code'])->value('id');
+            if(!$parent_id){
+                throw new \Exception('邀请码不存在');
+            }
+            $parent_2_id = User::where('id',$parent_id)->value('parent_id');
+
+            $userSn = User::createUserSn();
+            $password = getPwdEncryptString($params['password']);
+            $avatar = $params['avatar'];
+            if(!$params['avatar']){
+                $avatar = ConfigService::get('default_image', 'user_avatar');
+            }
+            
+            User::create([
+                'avatar' => $avatar,
+                'real_name' => $params['real_name'],
+                'account' => $params['account'],
+                'password' => $password,
+                'mobile' => $params['mobile'],
+                'email' => $params['email'],
+                'points' => $params['points'],
+                'icode' => self::getIcode(),
+                'invitation_code' => $params['invitation_code'],
+                // 'login_ip' => $params['login_ip'],
+                // 'login_time' => $params['login_time'],
+                // 'login_device' => $params['login_device'],
+                'parent_id' => $parent_id ?? 0,
+                'parent_2_id' => $parent_2_id ?? 0
+            ]);
+
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            self::setError($e->getMessage());
+            return false;
+        }
+    }
+    public static function getIcode(int $length = 6): string
+    {
+        $icode = generateReferralCode($length);
+        $user = User::where('icode', $icode)->findOrEmpty();
+        if (!$user->isEmpty()) {
+            $icode = generateReferralCode($length);
+            $user = User::where('icode', $icode)->findOrEmpty();
+            if (!$user->isEmpty()) {
+                throw new Exception('邀请码生成错误，请重试');
+            }
+        }
+        return $icode;
+    }
+
+    /**
+     * @notes 编辑
+     * @param array $params
+     * @return bool
+     * @author likeadmin
+     * @date 2024/08/24 22:39
+     */
+    public static function edit(array $params): bool
+    {
+        Db::startTrans();
+        try {
+            $edit = [
+                'avatar' => $params['avatar'],
+                'real_name' => $params['real_name'],
+                'account' => $params['account'],
+                'mobile' => $params['mobile'],
+                'email' => $params['email'],
+                'points' => $params['points'],
+            ];
+            if(!empty($params['password'])){
+                $passwordSalt = Config::get('project.unique_identification');
+                $edit['password'] = create_password($params['password'], $passwordSalt);
+            }
+            User::where('id', $params['id'])->update($edit);
+
+            Db::commit();
+            return true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            self::setError($e->getMessage());
+            return false;
+        }
+    }
+
+
+    /**
+     * @notes 删除
+     * @param array $params
+     * @return bool
+     * @author likeadmin
+     * @date 2024/08/24 22:39
+     */
+    public static function delete(array $params): bool
+    {
+        return User::destroy($params['id']);
     }
 
 }

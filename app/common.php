@@ -3,6 +3,34 @@
 use app\common\service\FileService;
 use think\helper\Str;
 use PHPMailer\PHPMailer\PHPMailer;
+use think\facade\Config;
+/**
+ * 根据原始密码设置加密后的密码字符串
+ * @param string $originalPwd
+ * @return string
+ */
+function getPwdEncryptString(string $originalPwd): string
+{
+    $passwordSalt = Config::get('project.unique_identification');
+    return create_password($originalPwd, $passwordSalt);
+}
+//获取随机字符串
+function generateReferralCode(int $length = 10): string
+{
+    return substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, $length);
+}
+//获取登录设备
+function getDevice(){
+    // 获取 User-Agent 请求头信息
+    $userAgent = $_SERVER['HTTP_USER_AGENT'];
+    // 使用正则表达式提取客户端操作系统信息
+    if (preg_match('/\(([^)]+)\)/', $userAgent, $matches)) {
+        $os = explode(';',$matches[1])[0];
+    } else {
+        $os = 'Unknown';
+    }
+    return $os;
+}
 /**
  * todo 谷歌账号 系统发邮件
  * @param array $tomail 接收邮件者邮箱

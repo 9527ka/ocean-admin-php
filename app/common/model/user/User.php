@@ -28,9 +28,9 @@ use think\model\concern\SoftDelete;
  */
 class User extends BaseModel
 {
-    use SoftDelete;
+    // use SoftDelete;
 
-    protected $deleteTime = 'delete_time';
+    // protected $deleteTime = 'delete_time';
 
 
     /**

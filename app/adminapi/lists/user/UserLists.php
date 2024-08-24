@@ -17,6 +17,7 @@ use app\adminapi\lists\BaseAdminDataLists;
 use app\common\enum\user\UserTerminalEnum;
 use app\common\lists\ListsExcelInterface;
 use app\common\model\user\User;
+use app\common\model\OceanCardOrder;
 
 
 /**
@@ -118,7 +119,7 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
             
             array_push($map,$v);
         }
-        $field = "id,sn,nickname,email,real_name,points,icode,sex,avatar,account,mobile,channel,create_time,parent_id";
+        $field = "id,sn,nickname,email,real_name,points,icode,sex,avatar,account,mobile,channel,create_time,parent_id,login_device";
         $lists = User::where($map)
             ->limit($this->limitOffset, $this->limitLength)
             ->field($field)
@@ -127,6 +128,9 @@ class UserLists extends BaseAdminDataLists implements ListsExcelInterface
 
         foreach ($lists as &$item) {
             $item['parent_account'] = User::where('id',$item['parent_id'])->value('account');
+            $map = ['user_id'=>$item['id'],'state'=>1];
+            $item['order_total'] = OceanCardOrder::where($map)->sum('price');
+            $item['order_count'] = OceanCardOrder::where($map)->count();
         }
 
         return $lists;

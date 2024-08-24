@@ -63,6 +63,7 @@ class OceanCardOrderLists extends BaseApiDataLists implements ListsSearchInterfa
 
         $field = 'id,card_name,price,serial_number,cdk,pay_method,state,create_time';
         $result = OceanCardOrder::field($field)
+            ->where('user_id',$this->userId)
             ->where($this->queryWhere())
             ->where($this->searchWhere)
             ->orderRaw($orderRaw)
@@ -70,7 +71,8 @@ class OceanCardOrderLists extends BaseApiDataLists implements ListsSearchInterfa
             ->select()->toArray();
         if(!empty($result)){
             foreach ($result as &$v){
-                $v['card_img'] = 'https://a.yuejie.online/uploads/images/'.$v['price'].'.png';
+                $price = $v['price']>50?100:50;
+                $v['card_img'] = 'https://a.yuejie.online/uploads/price/'.$price.'.png';
             }
         }
         return $result;
