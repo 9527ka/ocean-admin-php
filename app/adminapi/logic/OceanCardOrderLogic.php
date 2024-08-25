@@ -44,11 +44,18 @@ class OceanCardOrderLogic extends BaseLogic
             OceanCardOrder::where('id', $params['id'])->update(['state' => $params['state']]);
 
             // 审核通过 - 给下单用户的上级新增积分 [目前统一加1个积分] @todo 后续做成配置项
+            // 每个月 要完成购买满24次才给上级新增积分
             if ($params['state'] == 1) {
-                $parent_id = User::where('id', $orderInfo->user_id)->value('parent_id');
-                if ($parent_id) {
-                    User::where('id', $parent_id)->inc('points', 1)->update();
-                }
+                // $startOfMonth = strtotime(date('Y-m-01 00:00:00')); // 月初
+                // $endOfMonth = strtotime(date('Y-m-t 23:59:59'));    // 月末
+                // $allCount = OceanCardOrder::whereBetweenTime('create_time',$startOfMonth,$endOfMonth)->where('state',1)->count();
+                //算上当前这次将要通过审核的
+                // if($allCount>=23){
+                    $parent_id = User::where('id', $orderInfo->user_id)->value('parent_id');
+                    if ($parent_id) {
+                        User::where('id', $parent_id)->inc('points', 1)->update();
+                    }
+                // }
             }
 
             Db::commit();

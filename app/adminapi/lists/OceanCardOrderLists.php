@@ -56,7 +56,7 @@ class OceanCardOrderLists extends BaseAdminDataLists implements ListsSearchInter
     public function lists(): array
     {
         $list = OceanCardOrder::where($this->searchWhere)
-            ->field(['id', 'card_id', 'card_name', 'price', 'state', 'serial_number', 'cdk', 'account', 'user_id', 'pay_method', 'pay_img','pay_hash', 'create_time'])
+            ->field(['id', 'card_id', 'card_name', 'price', 'order_price', 'state', 'serial_number', 'cdk', 'account', 'user_id', 'pay_method', 'pay_img','pay_hash', 'create_time'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()

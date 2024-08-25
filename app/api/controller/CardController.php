@@ -67,17 +67,17 @@ class CardController extends BaseApiController
             $card = OceanCard::create($p);
 
             // 计算价格 - 根据当前用户等级，计算优惠折扣 - 查询当前用户最新的积分数据
-            $point = User::where('id', $this->userId)->value('points');
-            $discount = $point ? (UserLevelLogic::getUserLevel($point)['discount'] ?? 10) / 10 : 1;
-
+            
+            $discount = UserLevelLogic::getUserLevel($this->userInfo['points'])['discount']/10;
             // 精密计算 - 防止失精导致多位小数点
-            $p['price'] = bcmul($p['price'], $discount, 2);
+            $p['order_price'] = bcmul($p['price'], $discount, 2);
             //创建订单
             $order = new OceanCardOrder();
             
             $order->card_id = $card->id;
             $order->card_name = $p['name'];
             $order->price = $p['price'];
+            $order->order_price = $p['price']*$discount;
             $order->card_img = $p['image'];
             $order->serial_number = $p['serial_number'];
             $order->cdk = $p['cdk'];

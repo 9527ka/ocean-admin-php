@@ -147,10 +147,10 @@ class WorkbenchLogic extends BaseLogic
         // 今日新增用户数
         $res['today_new_user'] = User::whereBetween('create_time', [$startTime, $endTime])->count();
         // // 首充人数
-        $res['first_recharge_count'] = OceanCardOrder::where('state', 1)->field('user_id')->distinct(true)->count();
+        $res['first_recharge_count'] = OceanCardOrder::whereBetween('create_time', [$startTime, $endTime])->where('state', 1)->field('user_id')->distinct(true)->count();
         // 复充人数
-        $res['repeat_recharge_count'] = OceanCardOrder::field('user_id, COUNT(*) as order_count')->group('user_id')->having('order_count >= 2')->count();
-        
+        $res['repeat_recharge_count'] = OceanCardOrder::whereBetween('create_time', [$startTime, $endTime])->field('user_id, COUNT(*) as order_count')->group('user_id')->having('order_count >= 2')->count();
+        // echo OceanCardOrder::getlastsql();die;
         // 订单总额
         $res['order_total'] = OceanCardOrder::where('state', 1)->sum('price');
         //今日订单总额

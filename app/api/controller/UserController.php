@@ -68,11 +68,14 @@ class UserController extends BaseApiController
         $result['share_daily'] = UserPosters::alias('up')
             ->join('user u', 'u.id = up.user_id')
             ->where('up.audit_status', 1)
+            ->where('up.date', date('Y-m-d'))
             ->where('u.parent_id|u.parent_2_id', $this->userId)
             ->count();
+        // echo UserPosters::getlastsql();die;
         $level = UserLevelLogic::getUserLevel($result['points']);
         // 用户分值对应的优惠比例
-        $result['discount'] = $level ? $level['discount']*0.1 : 0;
+        // $result['discount'] = $level ? number_format($level['discount'], 2, '.', '') : 0;
+        $result['discount'] = $level ? $level['discount'] : 0;
         $result['level_name'] = $level ? $level['name'] : 0;
 
         // 版本信息
