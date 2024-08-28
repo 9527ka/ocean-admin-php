@@ -57,7 +57,7 @@ class CardController extends BaseApiController
             //系统自动生成
             $p = [
                 'name' => 'amazon&SXF Gift Card '.$info['price'].' USD',
-                'image' => 'uploads/images/'.$info['price'].'.png',
+                'image' => 'uploads/price/'.$info['price'].'.png',
                 'price' => $info['price'],
                 'state' => 1,
                 'serial_number' => generate_card_number(),

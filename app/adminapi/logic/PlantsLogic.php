@@ -41,8 +41,9 @@ class PlantsLogic extends BaseLogic
         Db::startTrans();
         try {
             Plants::create([
+                'language' => $params['language'],
                 'title' => $params['title'],
-                'desc' => $params['desc'],
+                // 'desc' => $params['desc'],
                 'is_recommend' => $params['is_recommend'],
                 'content' => $params['content'],
                 'image' => $params['image']
@@ -70,8 +71,9 @@ class PlantsLogic extends BaseLogic
         Db::startTrans();
         try {
             Plants::where('id', $params['id'])->update([
+                'language' => $params['language'],
                 'title' => $params['title'],
-                'desc' => $params['desc'],
+                // 'desc' => $params['desc'],
                 'is_recommend' => $params['is_recommend'],
                 'content' => $params['content'],
                 'image' => $params['image']

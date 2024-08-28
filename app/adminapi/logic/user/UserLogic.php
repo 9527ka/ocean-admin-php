@@ -112,32 +112,16 @@ class UserLogic extends BaseLogic
         if ($user->parent_id) {
             $icodeUser = User::where(['id' => $user->parent_id])->field($field)->findOrEmpty();
         }
-        //获取一二级用户id，用逗号拼接
-        $users = User::alias('u1')
-            ->where('u1.id',$userId)
-            ->leftJoin('user u2', 'u2.parent_id = u1.id')
-            ->leftJoin('user u3', 'u3.parent_id = u2.id')
-            ->field([
-                'u1.id as user_id',
-                'GROUP_CONCAT(DISTINCT u2.id ORDER BY u2.id ASC) as first_level_ids',
-                'GROUP_CONCAT(DISTINCT u3.id ORDER BY u3.id ASC) as second_level_ids',
-                // 'GROUP_CONCAT(DISTINCT CONCAT_WS(",", u2.id, u3.id)) as all_child_ids'
-            ])
-            ->group('u1.id')
-            ->find();
-        $user_ids = '';
-        if(!empty($users)){
-            if($users['first_level_ids'] != '' && $users['second_level_ids'] != ''){
-                $user_ids = $users['first_level_ids'].','.$users['second_level_ids'];
-            }else if($users['first_level_ids'] != '' && $users['second_level_ids'] == ''){
-                $user_ids = $users['first_level_ids'];
-            }else if($users['first_level_ids'] == '' && $users['second_level_ids'] != ''){
-                $user_ids = $users['second_level_ids'];
-            }
-            // echo json_encode($users);die;
-        }
-        // 有分享记录的账号总数
-        $shareUserCount = UserPoster::whereIn('user_id', $user_ids)->group('user_id')->count();
+        $users = User::where('parent_id',$userId)->whereOr('parent_2_id',$userId)
+            ->field(['GROUP_CONCAT(DISTINCT id) as ids'])->find();
+        $user_ids = empty($users) ? '' : $users['ids'];
+
+        // 有分享记录的账号总数,子用户分享数
+        $shareUserCount = OceanCardOrder::alias('o')
+            ->join('user u', 'o.user_id = u.id')
+            ->where('o.state', 1)
+            ->where('u.parent_id|u.parent_2_id', $userId)
+            ->count();
         //统计下单总数
         $orderCount = OceanCardOrder::whereIn('user_id',$user_ids)->count();
         //统计总充值

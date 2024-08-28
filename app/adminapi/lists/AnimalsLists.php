@@ -39,7 +39,8 @@ class AnimalsLists extends BaseAdminDataLists implements ListsSearchInterface
     {
         return [
             '%like%' => ['title'],
-            '=' => ['is_recommend', 'create_time'],
+            '=' => ['is_recommend','language'],
+            'between_time' => ['create_time'],
         ];
     }
 
@@ -56,7 +57,7 @@ class AnimalsLists extends BaseAdminDataLists implements ListsSearchInterface
     public function lists(): array
     {
         return Animals::where($this->searchWhere)
-            ->field(['id', 'title', 'desc', 'is_recommend', 'image', 'content', 'create_time'])
+            ->field(['id', 'title', 'desc', 'is_recommend', 'image', 'content', 'create_time', 'language'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()

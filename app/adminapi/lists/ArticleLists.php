@@ -39,7 +39,8 @@ class ArticleLists extends BaseAdminDataLists implements ListsSearchInterface
     {
         return [
             '%like%' => ['title', 'theme'],
-            '=' => ['is_quality', 'date', 'create_time'],
+            '=' => ['is_quality', 'date','language'],
+            'between_time' => ['create_time'],
         ];
     }
 
@@ -56,7 +57,7 @@ class ArticleLists extends BaseAdminDataLists implements ListsSearchInterface
     public function lists(): array
     {
         return Article::where($this->searchWhere)
-            ->field(['id', 'title', 'desc', 'theme', 'is_quality', 'date', 'image', 'content', 'create_time'])
+            ->field(['id', 'title', 'desc', 'theme', 'is_quality', 'date', 'image', 'content', 'create_time', 'language'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()

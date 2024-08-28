@@ -145,12 +145,25 @@ class WorkbenchLogic extends BaseLogic
         // 总用户数
         $res['total_new_user'] = User::count();
         // 今日新增用户数
-        $res['today_new_user'] = User::whereBetween('create_time', [$startTime, $endTime])->count();
-        // // 首充人数
-        $res['first_recharge_count'] = OceanCardOrder::whereBetween('create_time', [$startTime, $endTime])->where('state', 1)->field('user_id')->distinct(true)->count();
-        // 复充人数
-        $res['repeat_recharge_count'] = OceanCardOrder::whereBetween('create_time', [$startTime, $endTime])->field('user_id, COUNT(*) as order_count')->group('user_id')->having('order_count >= 2')->count();
-        // echo OceanCardOrder::getlastsql();die;
+        $res['today_new_user'] = User::whereBetweenTime('create_time', $startTime, $endTime)->count();
+        
+        // 统计当日充值总数
+        $totalRecharges = OceanCardOrder::whereBetweenTime('create_time', $startTime, $endTime)->where('state', 1)->count();
+        
+        // 统计当日的首充总数（这些用户在今天之前没有充值记录）
+        $res['first_recharge_count'] = OceanCardOrder::alias('ro_today')
+            ->whereBetweenTime('ro_today.create_time', $startTime, $endTime)
+            ->where('ro_today.state', 1)
+            ->whereNotExists(function($query) use ($startTime) {
+                $query->table('la_ocean_card_order')
+                      ->alias('ro_past')
+                      ->whereRaw('ro_past.user_id = ro_today.user_id')
+                      ->where('ro_past.create_time', '<', $startTime)
+                      ->where('ro_past.state', 1);
+            })
+            ->count();
+        // 计算当日的复充总数（总充值数减去首充数）
+        $res['repeat_recharge_count'] = $totalRecharges - $res['first_recharge_count'];
         // 订单总额
         $res['order_total'] = OceanCardOrder::where('state', 1)->sum('price');
         //今日订单总额

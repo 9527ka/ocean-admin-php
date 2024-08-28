@@ -28,7 +28,4 @@ class UserLevel extends BaseModel
 {
     
     protected $name = 'user_levels';
-    
-
-    
 }

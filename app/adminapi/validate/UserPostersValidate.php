@@ -46,7 +46,7 @@ class UserPostersValidate extends BaseValidate
     protected $field = [
         'id' => 'id',
         'user_id' => '用户id',
-        'audit_status' => '审核状态',
+        'audit_status' => '审核',
         'poster_images' => '图片列表',
         'date' => '分享日期',
     ];
@@ -59,7 +59,7 @@ class UserPostersValidate extends BaseValidate
      * @notes 添加场景
      * @return UserPostersValidate
      * @author likeadmin
-     * @date 2024/08/15 16:53
+     * @date 2024/08/28 11:43
      */
     public function sceneAdd()
     {
@@ -71,7 +71,7 @@ class UserPostersValidate extends BaseValidate
      * @notes 编辑场景
      * @return UserPostersValidate
      * @author likeadmin
-     * @date 2024/08/15 16:53
+     * @date 2024/08/28 11:43
      */
     public function sceneEdit()
     {
@@ -83,7 +83,7 @@ class UserPostersValidate extends BaseValidate
      * @notes 删除场景
      * @return UserPostersValidate
      * @author likeadmin
-     * @date 2024/08/15 16:53
+     * @date 2024/08/28 11:43
      */
     public function sceneDelete()
     {
@@ -95,7 +95,7 @@ class UserPostersValidate extends BaseValidate
      * @notes 详情场景
      * @return UserPostersValidate
      * @author likeadmin
-     * @date 2024/08/15 16:53
+     * @date 2024/08/28 11:43
      */
     public function sceneDetail()
     {

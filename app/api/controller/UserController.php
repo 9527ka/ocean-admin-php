@@ -22,6 +22,7 @@ use app\api\validate\UserValidate;
 use app\common\model\user\User;
 use app\common\model\UserPosters;
 use app\common\model\UserLevel;
+use app\common\model\OceanCardOrder;
 use think\facade\Lang;
 use app\api\lists\UserLists;
 /**
@@ -65,13 +66,14 @@ class UserController extends BaseApiController
         //子用户数
         $result['invite_partners'] = User::where('parent_id', $this->userId)->whereOr('parent_2_id', $this->userId)->count();
         //子用户分享数
-        $result['share_daily'] = UserPosters::alias('up')
-            ->join('user u', 'u.id = up.user_id')
-            ->where('up.audit_status', 1)
-            ->where('up.date', date('Y-m-d'))
+        $startOfDay = date('Y-m-d 00:00:00');
+        $endOfDay = date('Y-m-d 23:59:59');
+        $result['share_daily'] = OceanCardOrder::alias('o')
+            ->join('user u', 'o.user_id = u.id')
+            ->where('o.state', 1)
+            ->whereBetweenTime('o.create_time', $startOfDay, $endOfDay)
             ->where('u.parent_id|u.parent_2_id', $this->userId)
             ->count();
-        // echo UserPosters::getlastsql();die;
         $level = UserLevelLogic::getUserLevel($result['points']);
         // 用户分值对应的优惠比例
         // $result['discount'] = $level ? number_format($level['discount'], 2, '.', '') : 0;
@@ -86,7 +88,15 @@ class UserController extends BaseApiController
 
     public function levels()
     {
-        return $this->data(UserLevel::select()->toArray());
+        $list = UserLevel::select()->toArray();
+        foreach ($list as $k => &$v){
+            if($k == 0){
+                $v['points'] = $v['points'].'-'.($v['points']+600);
+            }else if($k < count($list)-1){
+                $v['points'] = $v['points'].'-'.($v['points']+599);
+            }
+        }
+        return $this->data($list);
     }
 
     /**

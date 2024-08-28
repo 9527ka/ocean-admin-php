@@ -43,8 +43,8 @@ class OceanCardLists extends BaseAdminDataLists implements ListsExcelInterface
             '=' => ['name', 'price', 'state', 'serial_number', 'cdk', 'redemption_state'],
             'between_time' => ['create_time']
         ];
-        $allowSearch = ['name', 'price', 'state', 'serial_number', 'cdk', 'redemption_state'];
-        return array_intersect(array_keys($this->params), $allowSearch);
+        // $allowSearch = ['name', 'price', 'state', 'serial_number', 'cdk', 'redemption_state'];
+        // return array_intersect(array_keys($this->params), $allowSearch);
     }
 
 
@@ -60,7 +60,6 @@ class OceanCardLists extends BaseAdminDataLists implements ListsExcelInterface
     public function lists(): array
     {
         $p = $this->params;
-        
         unset($p['page_size']);
         unset($p['page_no']);
         $arr = filtered_array($p);
@@ -88,15 +87,6 @@ class OceanCardLists extends BaseAdminDataLists implements ListsExcelInterface
             ->toArray();
         // echo OceanCard::getlastsql();die;
         return $list;
-        
-        
-        $field = 'id,name,image,price,state,serial_number,cdk,redemption_state';
-        $lists = OceanCard::withSearch($this->setSearch(), $this->params)
-            ->limit($this->limitOffset, $this->limitLength)
-            ->field($field)
-            ->order('id desc')
-            ->select()->toArray();
-        return $lists;
     }
 
 
@@ -108,7 +98,26 @@ class OceanCardLists extends BaseAdminDataLists implements ListsExcelInterface
      */
     public function count(): int
     {
-        return OceanCard::where($this->searchWhere)->count();
+        $p = $this->params;
+        unset($p['page_size']);
+        unset($p['page_no']);
+        $arr = filtered_array($p);
+        $map = [];
+        foreach ($arr as $v){
+            if(in_array('start_time',$v)){
+                array_push($map,['create_time','between',[strtotime($p['start_time']),strtotime($p['end_time'])]]);
+                continue;
+            }
+            if(in_array('end_time',$v)) continue;
+            if(in_array('page_type',$v)) continue;
+            if(in_array('page_start',$v)) continue;
+            if(in_array('page_end',$v)) continue;
+            if(in_array('file_name',$v)) continue;
+            if(in_array('export',$v)) continue;
+            
+            array_push($map,$v);
+        }
+        return OceanCard::where($map)->count();
         // return OceanCard::withSearch($this->setSearch(), $this->params)->count();
     }
     

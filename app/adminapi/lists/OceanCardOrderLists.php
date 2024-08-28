@@ -17,7 +17,7 @@ namespace app\adminapi\lists;
 
 use app\adminapi\lists\BaseAdminDataLists;
 use app\common\model\OceanCardOrder;
-use app\common\lists\ListsSearchInterface;
+use app\common\lists\ListsExcelInterface;
 
 
 /**
@@ -25,7 +25,7 @@ use app\common\lists\ListsSearchInterface;
  * Class OceanCardOrderLists
  * @package app\adminapi\lists
  */
-class OceanCardOrderLists extends BaseAdminDataLists implements ListsSearchInterface
+class OceanCardOrderLists extends BaseAdminDataLists implements ListsExcelInterface
 {
 
 
@@ -55,7 +55,30 @@ class OceanCardOrderLists extends BaseAdminDataLists implements ListsSearchInter
      */
     public function lists(): array
     {
-        $list = OceanCardOrder::where($this->searchWhere)
+        $p = $this->params;
+        if($p['serial_number']){
+            $p['serial_number'] = str_replace(' ', '', $p['serial_number']);
+        }
+        
+        unset($p['page_size']);
+        unset($p['page_no']);
+        $arr = filtered_array($p);
+        $map = [];
+        foreach ($arr as $v){
+            if(in_array('start_time',$v)){
+                array_push($map,['create_time','between',[strtotime($p['start_time']),strtotime($p['end_time'])]]);
+                continue;
+            }
+            if(in_array('end_time',$v)) continue;
+            if(in_array('page_type',$v)) continue;
+            if(in_array('page_start',$v)) continue;
+            if(in_array('page_end',$v)) continue;
+            if(in_array('file_name',$v)) continue;
+            if(in_array('export',$v)) continue;
+            
+            array_push($map,$v);
+        }
+        $list = OceanCardOrder::where($map)
             ->field(['id', 'card_id', 'card_name', 'price', 'order_price', 'state', 'serial_number', 'cdk', 'account', 'user_id', 'pay_method', 'pay_img','pay_hash', 'create_time'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
@@ -78,7 +101,62 @@ class OceanCardOrderLists extends BaseAdminDataLists implements ListsSearchInter
      */
     public function count(): int
     {
-        return OceanCardOrder::where($this->searchWhere)->count();
+        $p = $this->params;
+        if($p['serial_number']){
+            $p['serial_number'] = str_replace(' ', '', $p['serial_number']);
+        }
+        
+        unset($p['page_size']);
+        unset($p['page_no']);
+        $arr = filtered_array($p);
+        $map = [];
+        foreach ($arr as $v){
+            if(in_array('start_time',$v)){
+                array_push($map,['create_time','between',[strtotime($p['start_time']),strtotime($p['end_time'])]]);
+                continue;
+            }
+            if(in_array('end_time',$v)) continue;
+            if(in_array('page_type',$v)) continue;
+            if(in_array('page_start',$v)) continue;
+            if(in_array('page_end',$v)) continue;
+            if(in_array('file_name',$v)) continue;
+            if(in_array('export',$v)) continue;
+            
+            array_push($map,$v);
+        }
+        return OceanCardOrder::where($map)->count();
+    }
+    /**
+     * @notes 导出文件名
+     * @return string
+     * @author 段誉
+     * @date 2022/11/24 16:17
+     */
+    public function setFileName(): string
+    {
+        return '订单列表';
+    }
+    
+    /**
+     * @notes 导出字段
+     * @return string[]
+     * @author 段誉
+     * @date 2022/11/24 16:17
+     */
+    public function setExcelFields(): array
+    {
+        return [
+            'card_name' => '卡名称',
+            'price' => '卡面值',
+            'order_price' => '金额(USD)',
+            'serial_number' => '卡号',
+            'cdk' => '激活码',
+            'account' => '用户',
+            'pay_hash' => '支付哈希',
+            'cdk' => '激活码',
+            'state' => '状态',
+            'create_time' => '创建时间'
+        ];
     }
 
 }

@@ -74,7 +74,14 @@ class HomeController extends BaseApiController
     }
     public function config(){
         $key = $this->request->get('key/s');
-        $res = SystemSetting::where('status',1)->where('key',$key)->value('value');
+        $lang = $this->request->get('lang/s','en');
+        
+        $map['status'] = 1;
+        $map['key'] = $key;
+        if($key != 'share_img' && $key != 'address'){
+            $map['language'] = $lang;
+        }
+        $res = SystemSetting::where($map)->value('value');
         return $this->success('', ['content'=>$res]);
     }
 }

@@ -54,6 +54,7 @@ class PosterController extends BaseApiController
 
             $userPoster = UserPoster::create([
                 'user_id' => $this->userId,
+                'account' => $this->userInfo['account'],
                 'date' => $date,
                 'poster_images' => $images,
                 'audit_status' => 0,

@@ -41,9 +41,10 @@ class ArticleLogic extends BaseLogic
         Db::startTrans();
         try {
             Article::create([
+                'language' => $params['language'],
                 'title' => $params['title'],
-                'desc' => $params['desc'],
-                'theme' => $params['theme'],
+                // 'desc' => $params['desc'],
+                // 'theme' => $params['theme'],
                 'is_quality' => $params['is_quality'],
                 'date' => $params['date'],
                 'image' => $params['image'],
@@ -72,9 +73,10 @@ class ArticleLogic extends BaseLogic
         Db::startTrans();
         try {
             Article::where('id', $params['id'])->update([
+                'language' => $params['language'],
                 'title' => $params['title'],
-                'desc' => $params['desc'],
-                'theme' => $params['theme'],
+                // 'desc' => $params['desc'],
+                // 'theme' => $params['theme'],
                 'is_quality' => $params['is_quality'],
                 'date' => $params['date'],
                 'image' => $params['image'],

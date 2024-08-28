@@ -33,8 +33,8 @@ class ArticleValidate extends BaseValidate
     protected $rule = [
         'id' => 'require',
         'title' => 'require',
-        'desc' => 'require',
-        'theme' => 'require',
+        // 'desc' => 'require',
+        // 'theme' => 'require',
         'is_quality' => 'require',
         'date' => 'require',
         'image' => 'require',
@@ -48,8 +48,8 @@ class ArticleValidate extends BaseValidate
     protected $field = [
         'id' => 'id',
         'title' => '标题',
-        'desc' => '文章概述',
-        'theme' => '主题',
+        // 'desc' => '文章概述',
+        // 'theme' => '主题',
         'is_quality' => '精选标志',
         'date' => '时间',
         'image' => '图片',

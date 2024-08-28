@@ -33,7 +33,7 @@ class PlantsValidate extends BaseValidate
     protected $rule = [
         'id' => 'require',
         'title' => 'require',
-        'desc' => 'require',
+        // 'desc' => 'require',
         'is_recommend' => 'require',
         'image' => 'require',
     ];
@@ -46,7 +46,7 @@ class PlantsValidate extends BaseValidate
     protected $field = [
         'id' => 'id',
         'title' => '标题',
-        'desc' => '描述',
+        // 'desc' => '描述',
         'is_recommend' => '推荐',
         'image' => '图片',
     ];

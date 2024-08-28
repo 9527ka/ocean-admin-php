@@ -38,7 +38,9 @@ class PlantsLists extends BaseAdminDataLists implements ListsSearchInterface
     public function setSearch(): array
     {
         return [
-            '=' => ['title', 'is_recommend', 'create_time'],
+            '%like%' => ['title'],
+            '=' => ['is_recommend','language'],
+            'between_time' => ['create_time'],
         ];
     }
 
@@ -54,12 +56,13 @@ class PlantsLists extends BaseAdminDataLists implements ListsSearchInterface
      */
     public function lists(): array
     {
-        return Plants::where($this->searchWhere)
-            ->field(['id', 'title', 'desc', 'is_recommend', 'image', 'create_time'])
+        $list = Plants::where($this->searchWhere)
+            ->field(['id', 'title', 'desc', 'is_recommend', 'image', 'create_time', 'language'])
             ->limit($this->limitOffset, $this->limitLength)
             ->order(['id' => 'desc'])
             ->select()
             ->toArray();
+        return $list;
     }
 
 

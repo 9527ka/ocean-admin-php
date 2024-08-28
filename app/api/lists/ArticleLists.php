@@ -71,8 +71,10 @@ class ArticleLists extends BaseApiDataLists implements ListsSearchInterface
     public function lists(): array
     {
         $act = $this->request->get('act/s');
+        $lang = $this->request->get('lang/s');
+        
 //        $orderRaw = 'sort desc, id desc';
-        $orderRaw = 'date asc';
+        $orderRaw = 'date desc';
 //        $sortType = $this->params['sort'] ?? 'default';
 //        // 最新排序
 //        if ($sortType == 'new') {
@@ -86,6 +88,7 @@ class ArticleLists extends BaseApiDataLists implements ListsSearchInterface
         $field = 'id,title,desc,theme,is_quality,date,image';
         if($act == 'home'){
             $result = Article::field($field)
+                ->where('language', $lang)
                 ->where($this->queryWhere())
                 ->where($this->searchWhere)
                 ->orderRaw($orderRaw)
@@ -93,6 +96,7 @@ class ArticleLists extends BaseApiDataLists implements ListsSearchInterface
                 ->select()->toArray();
         }else{
             $result = Article::field($field)
+                ->where('language', $lang)
                 ->where($this->queryWhere())
                 ->where($this->searchWhere)
                 ->orderRaw($orderRaw)

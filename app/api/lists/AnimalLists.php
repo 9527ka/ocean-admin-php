@@ -71,6 +71,8 @@ class AnimalLists extends BaseApiDataLists implements ListsSearchInterface
     public function lists(): array
     {
         $act = $this->request->get('act/s');
+        $lang = $this->request->get('lang/s');
+        
 //        $orderRaw = 'sort desc, id desc';
         $orderRaw = 'create_time desc';
         $sortType = $this->params['sort'] ?? 'default';
@@ -86,6 +88,7 @@ class AnimalLists extends BaseApiDataLists implements ListsSearchInterface
         $field = 'id,title,desc,is_recommend,image,is_show,create_time';
         if($act == 'home'){
             $result = Animals::field($field)
+                ->where('language', $lang)
                 ->where($this->queryWhere())
                 ->where($this->searchWhere)
                 ->orderRaw($orderRaw)
@@ -93,6 +96,7 @@ class AnimalLists extends BaseApiDataLists implements ListsSearchInterface
                 ->select()->toArray();
         }else{
             $result = Animals::field($field)
+                ->where('language', $lang)
                 ->where($this->queryWhere())
                 ->where($this->searchWhere)
                 ->orderRaw($orderRaw)

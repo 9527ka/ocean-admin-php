@@ -32,7 +32,7 @@ class AnimalsValidate extends BaseValidate
       */
     protected $rule = [
         'id' => 'require',
-        'desc' => 'require',
+        // 'desc' => 'require',
         'is_recommend' => 'require',
         'image' => 'require',
     ];
@@ -44,7 +44,7 @@ class AnimalsValidate extends BaseValidate
      */
     protected $field = [
         'id' => 'id',
-        'desc' => '文章概述',
+        // 'desc' => '文章概述',
         'is_recommend' => '是否推荐',
         'image' => '文章图片列表',
     ];

@@ -41,8 +41,9 @@ class AnimalsLogic extends BaseLogic
         Db::startTrans();
         try {
             Animals::create([
+                'language' => $params['language'],
                 'title' => $params['title'],
-                'desc' => $params['desc'],
+                // 'desc' => $params['desc'],
                 'is_recommend' => $params['is_recommend'],
                 'image' => $params['image'],
                 'content' => $params['content']
@@ -70,8 +71,9 @@ class AnimalsLogic extends BaseLogic
         Db::startTrans();
         try {
             Animals::where('id', $params['id'])->update([
+                'language' => $params['language'],
                 'title' => $params['title'],
-                'desc' => $params['desc'],
+                // 'desc' => $params['desc'],
                 'is_recommend' => $params['is_recommend'],
                 'image' => $params['image'],
                 'content' => $params['content']
