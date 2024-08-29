@@ -48,6 +48,7 @@ class LoginController extends BaseApiController
      */
     public function account()
     {
+        return $this->fail(Lang::get('email_is_empty'));
         $params = (new LoginAccountValidate())->post()->goCheck();
         $result = LoginLogic::login($params);
         if (false === $result) {

@@ -15,7 +15,8 @@
 namespace app\api\controller;
 
 use app\common\controller\BaseLikeAdminController;
-
+// use think\facade\App;
+use think\facade\Lang;
 class BaseApiController extends BaseLikeAdminController
 {
     protected int $userId = 0;
@@ -23,6 +24,13 @@ class BaseApiController extends BaseLikeAdminController
 
     public function initialize()
     {
+        // 如果前端传递了语言类型，则设置语言环境
+        $lang = $this->request->get('lang');
+        if ($lang) {
+            // 设置当前应用的语言
+            // App::setLang($lang);
+            Lang::setLangSet($lang);
+        }
         if (isset($this->request->userInfo) && $this->request->userInfo) {
             $this->userInfo = $this->request->userInfo;
             $this->userId = $this->request->userInfo['user_id'];

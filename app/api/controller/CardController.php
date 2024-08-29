@@ -113,10 +113,10 @@ class CardController extends BaseApiController
     {
         $card = request()->get('card');
         $cdk = request()->get('cdk');
-        $c_id = OceanCard::where(['redemption_state' => 0,'serial_number' => $card,'cdk' => $cdk])->value('id');
-        if ($c_id) {
-            OceanCard::where('id',$c_id)->update(['redemption_state' => 1]);
-            return $this->success('success');
+        $card = OceanCard::where(['redemption_state' => 0,'serial_number' => $card,'cdk' => $cdk])->field('id,name,price')->find();
+        if ($card) {
+            OceanCard::where('id',$card->id)->update(['redemption_state' => 1]);
+            return $this->success('success',['name'=>$card->name,'price'=>$card->price]);
         }
         return $this->fail('The card has been used or does not exist!');
     }

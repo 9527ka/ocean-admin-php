@@ -76,4 +76,6 @@ return [
     'mobile_already_exist' => 'Mobile already exist',
     'email_not_exist' => 'Email does not exist',
     'username_not_exist' => 'Username does not exist',
+    'email_is_empty' => 'Email cannot be empty',
+    'username_is_empty' => 'Username cannot be empty',
 ];
