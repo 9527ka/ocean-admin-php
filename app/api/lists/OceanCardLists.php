@@ -76,7 +76,7 @@ class OceanCardLists extends BaseApiDataLists implements ListsSearchInterface
             ->where($this->searchWhere)
             ->group('price')
             ->orderRaw($orderRaw)
-            ->limit($this->limitOffset, $this->limitLength)
+            // ->limit($this->limitOffset, $this->limitLength)
             ->select()->toArray();
         //当日是否有分享审核成功
         $has_share = UserPosters::where(['user_id'=>$this->userId,'audit_status'=>1,'date'=>date('Y-m-d')])->value('id');

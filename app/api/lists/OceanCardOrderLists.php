@@ -4,6 +4,7 @@ namespace app\api\lists;
 use app\api\lists\BaseApiDataLists;
 use app\common\enum\YesNoEnum;
 use app\common\lists\ListsSearchInterface;
+use app\common\model\OceanCard;
 use app\common\model\OceanCardOrder;
 use app\common\model\article\Article;
 use app\common\model\article\ArticleCollect;
@@ -61,7 +62,7 @@ class OceanCardOrderLists extends BaseApiDataLists implements ListsSearchInterfa
         $orderRaw = 'create_time desc';
         $sortType = $this->params['sort'] ?? 'default';
 
-        $field = 'id,card_name,price,serial_number,cdk,pay_method,state,create_time';
+        $field = 'id,card_name,card_id,price,serial_number,cdk,pay_method,state,create_time';
         $result = OceanCardOrder::field($field)
             ->where('user_id',$this->userId)
             ->where($this->queryWhere())
@@ -71,8 +72,8 @@ class OceanCardOrderLists extends BaseApiDataLists implements ListsSearchInterfa
             ->select()->toArray();
         if(!empty($result)){
             foreach ($result as &$v){
-                $price = $v['price']>50?100:50;
-                $v['card_img'] = 'https://a.yuejie.online/uploads/price/'.$price.'.png';
+                $v['redemption_state'] = OceanCard::where('id',$v['card_id'])->value('redemption_state');
+                $v['card_img'] = 'https://a.yuejie.online/uploads/price/'.intval($v['price']).'.png';
             }
         }
         return $result;

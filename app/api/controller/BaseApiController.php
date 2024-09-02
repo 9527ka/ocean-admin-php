@@ -25,7 +25,7 @@ class BaseApiController extends BaseLikeAdminController
     public function initialize()
     {
         // 如果前端传递了语言类型，则设置语言环境
-        $lang = $this->request->get('lang');
+        $lang = $this->request->param('lang','en');
         if ($lang) {
             // 设置当前应用的语言
             // App::setLang($lang);
