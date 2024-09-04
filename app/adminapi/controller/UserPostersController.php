@@ -20,7 +20,7 @@ use app\adminapi\controller\BaseAdminController;
 use app\adminapi\lists\UserPostersLists;
 use app\adminapi\logic\UserPostersLogic;
 use app\adminapi\validate\UserPostersValidate;
-
+use app\common\model\UserPosters;
 
 /**
  * UserPosters控制器
@@ -45,6 +45,7 @@ class UserPostersController extends BaseAdminController
      */
     public function lists()
     {
+        UserPosters::where('is_tip', 0)->save(['is_tip' => 1]);
         return $this->dataLists(new UserPostersLists());
     }
 

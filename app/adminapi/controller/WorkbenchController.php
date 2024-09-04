@@ -15,7 +15,8 @@
 namespace app\adminapi\controller;
 
 use app\adminapi\logic\WorkbenchLogic;
-
+use app\common\model\UserPosters;
+use app\common\model\OceanCardOrder;
 /**
  * 工作台
  * Class WorkbenchCotroller
@@ -23,7 +24,23 @@ use app\adminapi\logic\WorkbenchLogic;
  */
 class WorkbenchController extends BaseAdminController
 {
-
+    public array $notNeedLogin = ['checkOrder'];
+    //检查是否有新分享订单、充值订单
+    public function checkOrder(){
+        $orderCount = OceanCardOrder::where('is_tip', 0)->where('state',0)->count();
+        $shareCount = UserPosters::where('is_tip', 0)->where('audit_status',0)->count();
+        return $this->data(['orderCount' => $orderCount, 'shareCount' => $shareCount]);
+    }
+    //人工介入时，关闭提示音
+    // public function closeOrderTip(){
+    //     $act = request()->get('act',1);
+    //     if($act == 1){
+    //         $orderCount = OceanCardOrder::where('is_tip', 0)->save(['is_tip' => 1]);
+    //     }else{
+    //         $shareCount = UserPosters::where('is_tip', 0)->save(['is_tip' => 1]);
+    //     }
+    //     return $this->success();
+    // }
     /**
      * @notes 工作台
      * @return \think\response\Json

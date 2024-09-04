@@ -72,7 +72,7 @@ class UserPosterLists extends BaseApiDataLists implements ListsSearchInterface
     public function lists(): array
     {
 //        $orderRaw = 'sort desc, id desc';
-        $orderRaw = 'date desc';
+        $orderRaw = 'create_time desc';
 
         $field = '*';
         $result = UserPoster::field($field)

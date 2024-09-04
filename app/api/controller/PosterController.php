@@ -40,7 +40,7 @@ class PosterController extends BaseApiController
 
 //        halt(config('database.mongo'));
 
-            $posterInfo = UserPoster::where('date', $date)->where(['user_id' => $this->userId,'audit_status' => 1])->findOrEmpty();
+            $posterInfo = UserPoster::where('date', $date)->where(['user_id' => $this->userId])->where('audit_status','<>', 9)->findOrEmpty();
             if (!$posterInfo->isEmpty()) {
                 throw new \Exception(Lang::get('has_shared'));
             }

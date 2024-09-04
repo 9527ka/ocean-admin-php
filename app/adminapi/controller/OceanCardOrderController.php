@@ -20,7 +20,7 @@ use app\adminapi\controller\BaseAdminController;
 use app\adminapi\lists\OceanCardOrderLists;
 use app\adminapi\logic\OceanCardOrderLogic;
 use app\adminapi\validate\OceanCardOrderValidate;
-
+use app\common\model\OceanCardOrder;
 
 /**
  * OceanCardOrder控制器
@@ -45,6 +45,7 @@ class OceanCardOrderController extends BaseAdminController
      */
     public function lists()
     {
+        OceanCardOrder::where('is_tip', 0)->save(['is_tip' => 1]);
         return $this->dataLists(new OceanCardOrderLists());
     }
 
