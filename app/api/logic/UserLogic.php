@@ -26,6 +26,7 @@ use app\common\{enum\notice\NoticeEnum,
     service\wechat\WeChatMnpService};
 use think\facade\Config;
 use think\facade\Lang;
+use app\api\logic\LoginLogic;
 
 /**
  * 会员逻辑层
@@ -143,8 +144,9 @@ class UserLogic extends BaseLogic
             }
 
             // 重置密码
-            $passwordSalt = Config::get('project.unique_identification');
-            $password = create_password($params['password'], $passwordSalt);
+            // $passwordSalt = Config::get('project.unique_identification');
+            // $password = create_password($params['password'], $passwordSalt);
+            $password = LoginLogic::getPwdEncryptString($params['password']);
 
             // 更新
             User::where('mobile', $params['mobile'])->update([
@@ -176,8 +178,7 @@ class UserLogic extends BaseLogic
             }
 
             // 验证老密码
-            $password = LoginLogic::getPwdEncryptString($params['old_password']);
-            if ($password != $user->password) {
+            if(!password_verify($params['old_password'], $user->password)){
                 throw new \Exception(Lang::get('old_password_invalidate'));
             }
 

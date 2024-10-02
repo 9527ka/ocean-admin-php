@@ -1,17 +1,4 @@
 <?php
-// +----------------------------------------------------------------------
-// | likeadmin快速开发前后端分离管理后台（PHP版）
-// +----------------------------------------------------------------------
-// | 欢迎阅读学习系统程序代码，建议反馈是我们前进的动力
-// | 开源版本可自由商用，可去除界面版权logo
-// | gitee下载：https://gitee.com/likeshop_gitee/likeadmin
-// | github下载：https://github.com/likeshop-github/likeadmin
-// | 访问官网：https://www.likeadmin.cn
-// | likeadmin团队 版权所有 拥有最终解释权
-// +----------------------------------------------------------------------
-// | author: likeadminTeam
-// +----------------------------------------------------------------------
-
 namespace app\api\logic;
 
 use app\common\cache\WebScanLoginCache;
@@ -49,7 +36,7 @@ class LoginLogic extends BaseLogic
     public static function sendPwd(array $p): bool
     {
         try {
-            $pwd = rand(100000,999999);
+            $pwd = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyz'), 0, 6);
             // 发送密码
             $emailLogic = new MailLogic();
             $sta = $emailLogic->sendPwdEmail($p['email'], $pwd);
@@ -63,6 +50,11 @@ class LoginLogic extends BaseLogic
             self::setError($e->getMessage());
             return false;
         }
+    }
+    
+    public static function getPwdEncryptString($originalPwd)
+    {
+        return password_hash($originalPwd, PASSWORD_BCRYPT);
     }
     public static function sendCode(string $email): bool
     {
@@ -84,11 +76,11 @@ class LoginLogic extends BaseLogic
      * @param string $originalPwd
      * @return string
      */
-    public static function getPwdEncryptString(string $originalPwd): string
-    {
-        $passwordSalt = Config::get('project.unique_identification');
-        return create_password($originalPwd, $passwordSalt);
-    }
+    // public static function self::getPwdEncryptString(string $originalPwd): string
+    // {
+    //     // $passwordSalt = Config::get('project.unique_identification');
+    //     // return create_password($originalPwd, $passwordSalt);
+    // }
 
     public static function generateReferralCode(int $length = 10): string
     {
@@ -205,8 +197,11 @@ class LoginLogic extends BaseLogic
             }
 
             // 验证密码
-            $password = self::getPwdEncryptString($params['password']);
-            if ($password != $user->password) {
+            // $password = self::self::getPwdEncryptString($params['password']);
+            // if ($password != $user->password) {
+            //     throw new \Exception(Lang::get('password_invalidate'));
+            // }
+            if(!password_verify($params['password'], $user->password)){
                 throw new \Exception(Lang::get('password_invalidate'));
             }
 

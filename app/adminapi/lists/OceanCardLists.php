@@ -85,6 +85,11 @@ class OceanCardLists extends BaseAdminDataLists implements ListsExcelInterface
             ->order(['id' => 'desc'])
             ->select()
             ->toArray();
+        if(!empty($list)){
+            foreach ($list as &$v){
+                $v['serial_number'] = format_card_number($v['serial_number']);
+            }
+        }
         // echo OceanCard::getlastsql();die;
         return $list;
     }

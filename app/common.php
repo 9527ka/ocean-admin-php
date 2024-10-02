@@ -9,13 +9,14 @@ use think\facade\Config;
  * @param string $originalPwd
  * @return string
  */
-function getPwdEncryptString(string $originalPwd): string
+function getPwdEncryptString($originalPwd)
 {
-    $passwordSalt = Config::get('project.unique_identification');
-    return create_password($originalPwd, $passwordSalt);
+    return password_hash($originalPwd, PASSWORD_BCRYPT);
+    // $passwordSalt = Config::get('project.unique_identification');
+    // return create_password($originalPwd, $passwordSalt);
 }
 //获取随机字符串
-function generateReferralCode(int $length = 10): string
+function generateReferralCode($length = 10)
 {
     return substr(str_shuffle('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, $length);
 }

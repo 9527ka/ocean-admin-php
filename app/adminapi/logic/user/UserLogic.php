@@ -23,7 +23,7 @@ use app\common\model\UserPoster;
 use app\common\model\OceanCardOrder;
 use think\facade\Db;
 use think\facade\Config;
-
+use app\api\logic\LoginLogic;
 
 use think\Exception;
 use app\common\service\{
@@ -251,6 +251,7 @@ class UserLogic extends BaseLogic
             $parent_2_id = User::where('id',$parent_id)->value('parent_id');
 
             $userSn = User::createUserSn();
+            
             $password = getPwdEncryptString($params['password']);
             $avatar = $params['avatar'];
             if(!$params['avatar']){
@@ -316,8 +317,8 @@ class UserLogic extends BaseLogic
                 'points' => $params['points'],
             ];
             if(!empty($params['password'])){
-                $passwordSalt = Config::get('project.unique_identification');
-                $edit['password'] = create_password($params['password'], $passwordSalt);
+                // $passwordSalt = Config::get('project.unique_identification');
+                $edit['password'] = LoginLogic::getPwdEncryptString($params['password']);
             }
             User::where('id', $params['id'])->update($edit);
 

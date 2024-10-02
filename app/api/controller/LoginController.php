@@ -22,7 +22,13 @@ class LoginController extends BaseApiController
 {
 
     public array $notNeedLogin = ['retrieve_pwd','register', 'sendCode', 'account', 'logout', 'codeUrl', 'oaLogin',  'mnpLogin', 'getScanCode', 'scanLogin'];
-
+    
+    public function initialize()
+    {
+        // 如果前端传递了语言类型，则设置语言环境
+        $lang = $this->request->param('lang','en');
+        Lang::setLangSet($lang);
+    }
     /**
      * @notes 注册账号
      * @return \think\response\Json
@@ -48,6 +54,8 @@ class LoginController extends BaseApiController
      */
     public function account()
     {
+        $lang = $this->request->param('lang','en');
+        // Lang::setLangSet('en');
         $params = (new LoginAccountValidate())->post()->goCheck();
         $result = LoginLogic::login($params);
         if (false === $result) {

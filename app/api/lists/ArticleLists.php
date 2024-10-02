@@ -71,8 +71,7 @@ class ArticleLists extends BaseApiDataLists implements ListsSearchInterface
     public function lists(): array
     {
         $act = $this->request->get('act/s');
-        $lang = $this->request->get('lang/s');
-        
+        $lang = $this->request->param('lang','en');
 //        $orderRaw = 'sort desc, id desc';
         $orderRaw = 'date desc';
 //        $sortType = $this->params['sort'] ?? 'default';

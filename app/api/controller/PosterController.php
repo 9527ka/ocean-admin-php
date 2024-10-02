@@ -57,7 +57,7 @@ class PosterController extends BaseApiController
                 'account' => $this->userInfo['account'],
                 'date' => $date,
                 'poster_images' => $images,
-                'audit_status' => 0,
+                'audit_status' => 1,
                 'create_time' => time(),
             ]);
 

@@ -72,8 +72,9 @@ class OceanCardOrderLists extends BaseApiDataLists implements ListsSearchInterfa
             ->select()->toArray();
         if(!empty($result)){
             foreach ($result as &$v){
+                $v['serial_number'] = format_card_number($v['serial_number']);
                 $v['redemption_state'] = OceanCard::where('id',$v['card_id'])->value('redemption_state');
-                $v['card_img'] = 'https://a.yuejie.online/uploads/price/'.intval($v['price']).'.png';
+                $v['card_img'] = 'https://system.qianduanceshi.net/uploads/price/'.intval($v['price']).'.png';
             }
         }
         return $result;
